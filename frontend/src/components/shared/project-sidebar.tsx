@@ -11,14 +11,26 @@ import {
     SidebarGroup,
     SidebarGroupLabel
 } from "@/components/ui/sidebar"
-import { IconRocket } from "@tabler/icons-react"
+import { IconChevronDown, IconRocket } from "@tabler/icons-react"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import VariableCheckbox from "./variable-checkbox"
+import { Separator } from "@/components/ui/separator"
+import DistanceCalculator from "./distance-calculator"
 
 type ProjectSidebarProps = {
     handleChangeLayout: (num: number) => void,
-    numLayout: number
+    numLayout: number,
+    handleChangeVariableSelected: (dict: any) => void,
+    variableSelected: {
+        voltage: boolean,
+        acceleration: boolean,
+        velocity: boolean,
+        force: boolean,
+        intensity: boolean,
+    }
 }
 
-const ProjectSidebar = ({ handleChangeLayout, numLayout }: ProjectSidebarProps) => {
+const ProjectSidebar = ({ handleChangeLayout, numLayout, handleChangeVariableSelected, variableSelected }: ProjectSidebarProps) => {
 
     return (
         <>
@@ -28,22 +40,43 @@ const ProjectSidebar = ({ handleChangeLayout, numLayout }: ProjectSidebarProps) 
                     <span className="ml-2">Bancada Booster</span>
                 </SidebarHeader>
                 <SidebarContent>
-                    <SidebarGroup>
-                        <SidebarGroupLabel>Layouts</SidebarGroupLabel>
-                        <SidebarMenu>
-                            <SidebarMenuItem>
-                                <SidebarMenuButton isActive={numLayout === 1} onClick={() => handleChangeLayout(1)}>
-                                    Layout 1
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                                <SidebarMenuButton isActive={numLayout === 2} onClick={() => handleChangeLayout(2)}>
-                                    Layout 2
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        </SidebarMenu>
-                    </SidebarGroup>
+                    <VariableCheckbox
+                        voltageCheck={variableSelected.voltage}
+                        accelerationCheck={variableSelected.acceleration}
+                        velocityCheck={variableSelected.velocity}
+                        forceCheck={variableSelected.force}
+                        intensityCheck={variableSelected.intensity}
+                        handleChangeSelected={handleChangeVariableSelected}                        
+                    />
+                    <Separator />
+                    <DistanceCalculator />
                 </SidebarContent>
+                <SidebarFooter>
+                    <Collapsible defaultOpen className="group/collapsible">
+                        <SidebarGroup>
+                            <SidebarGroupLabel asChild>
+                                <CollapsibleTrigger>
+                                    <span className="text-sm">Layouts</span>
+                                    <IconChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                                </CollapsibleTrigger>
+                            </SidebarGroupLabel>
+                            <CollapsibleContent>
+                                <SidebarMenu>
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton isActive={numLayout === 1} onClick={() => handleChangeLayout(1)}>
+                                            Layout 1
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton isActive={numLayout === 2} onClick={() => handleChangeLayout(2)}>
+                                            Layout 2
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                </SidebarMenu>
+                            </CollapsibleContent>
+                        </SidebarGroup>
+                    </Collapsible>
+                </SidebarFooter>
                 {/* <SidebarFooter>
                     <SidebarMenu>
                         <SidebarMenuItem>
