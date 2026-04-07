@@ -1,0 +1,121 @@
+import { IconCalculator, IconChevronDown } from "@tabler/icons-react"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { SidebarGroup, SidebarGroupLabel } from "@/components/ui/sidebar"
+import { Field, FieldContent, FieldDescription, FieldGroup, FieldLabel, FieldTitle } from "../ui/field"
+import { Slider } from "@/components/ui/slider"
+import { Button } from "../ui/button"
+import { useState } from "react"
+
+const DistanceCalculator = () => {
+
+    const [wValue, setWValue] = useState([90])
+    const [position, setPosition] = useState([25])
+    const [result, setResult] = useState<any>(null)
+
+    const handleSubmitDistance = (event: any) => {
+        event.preventDefault()
+
+        const getDistance = async () => {
+
+            const response = await fetch(`http://localhost:8001/api/calculate?m=${wValue}&d=${position}`)
+
+            if (response.ok) {
+                const data = await response.json()
+                setResult(data.braking_position_m)
+            }
+            else {
+                setResult(response.text())
+            }
+
+
+        }
+
+        getDistance()
+    }
+
+    return (
+        <Collapsible defaultOpen className="group/collapsible">
+            <SidebarGroup>
+                <SidebarGroupLabel asChild>
+                    <CollapsibleTrigger>
+                        <IconCalculator />
+                        <span className="text-lg pl-2">
+                            Calculate distance
+                        </span>
+                        <IconChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                    </CollapsibleTrigger>
+                </SidebarGroupLabel>
+                <CollapsibleContent>
+                    <form
+                        onSubmit={handleSubmitDistance}
+                        className="m-2"
+                    >
+                        <FieldGroup>
+                            <Field>
+                                <div className="mx-auto grid gap-3">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <FieldLabel htmlFor="slider-weight-sidebar">Weight</FieldLabel>
+                                        <span className="text-sm text-muted-foreground">
+                                            {wValue}
+                                        </span>
+                                    </div>
+                                    <Slider
+                                        id="slider-weight-sidebar"
+                                        value={wValue}
+                                        onValueChange={setWValue}
+                                        min={30}
+                                        max={300}
+                                        step={1}
+                                    />
+                                </div>
+                            </Field>
+                            <Field>
+                                <div className="mx-auto grid gap-3">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <FieldLabel htmlFor="slider-distance">Position</FieldLabel>
+                                        <span className="text-sm text-muted-foreground">
+                                            {position}
+                                        </span>
+                                    </div>
+                                    <Slider
+                                        id="slider-distance"
+                                        value={position}
+                                        onValueChange={setPosition}
+                                        min={0}
+                                        max={50}
+                                        step={1}
+                                    />
+                                </div>
+                            </Field>
+                            <Field>
+                                <Button type="submit">
+                                    Calculate
+                                </Button>
+                            </Field>
+                        </FieldGroup>
+                    </form>
+                    {result === null ? (
+                        <></>
+                    ) : (
+                        typeof result == "number" ? (
+                            <FieldLabel className="mt-5 p-2">
+                                <Field orientation="horizontal">
+                                    <FieldContent>
+                                        <FieldTitle className="text-2xl">s = {result}</FieldTitle>
+                                        <FieldDescription>Recommended stopping distance to reach the desired position</FieldDescription>
+                                    </FieldContent>
+                                </Field>
+                            </FieldLabel>
+                        ) : (
+                            <Field className="mx-auto mt-5 p-5 bg-red-300/15 rounded-sm">
+                                <FieldDescription className="text-red-400">{result}</FieldDescription>
+                            </Field>
+                        )
+                    )}
+                </CollapsibleContent>
+            </SidebarGroup>
+        </Collapsible>
+    )
+}
+
+export default DistanceCalculator

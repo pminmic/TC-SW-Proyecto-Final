@@ -1,9 +1,14 @@
+import { useState } from "react"
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import ButtonArea from "./button-area"
+import ChartsArea from "./charts-area"
+import MessageArea from "./message-area"
+import ModelArea from "./model-area"
 
 type ProjectLayoutProps = {
   numLayout: number
@@ -11,35 +16,47 @@ type ProjectLayoutProps = {
 
 const ProjectLayout = ({ numLayout }: ProjectLayoutProps) => {
 
+  const [wValue, setWValue] = useState([90])
+  const [isWeigthSet, setIsWeightSet] = useState(false)
+
+    const handleSetWeight = () => {
+        setIsWeightSet(true)
+    }
+
+    const handleReset = () => {
+        setIsWeightSet(false)
+    }
+
   if (numLayout === 1) {
     return (
-      <Card className="w-full min-h-screen">
+      <Card className="w-full min-h-11/12 m-5">
+        <CardHeader>
+          Hola babay
+        </CardHeader>
         <CardContent className="h-full">
           <ResizablePanelGroup orientation="vertical" className="h-full">
             <ResizablePanel defaultSize="65%">
-              <div className="flex h-full items-center justify-center p-6">
-                <span className="font-semibold">Gráficas</span>
-              </div>
+              <ChartsArea />
             </ResizablePanel>
             <ResizableHandle withHandle />
-            <ResizablePanel defaultSize="35%">
+            <ResizablePanel defaultSize="35%" minSize="25%">
               <ResizablePanelGroup orientation="horizontal" className="h-full">
                 <ResizablePanel defaultSize="25%">
-                  <div className="flex h-full items-center justify-center p-6">
-                    <span className="font-semibold">Mensajes</span>
-                  </div>
+                  <MessageArea />
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize="50%">
-                  <div className="flex h-full items-center justify-center p-6">
-                    <span className="font-semibold">Modelo 3D</span>
-                  </div>
+                  <ModelArea />
                 </ResizablePanel>
                 <ResizableHandle withHandle />
-                <ResizablePanel defaultSize="25%">
-                  <div className="flex h-full items-center justify-center p-6">
-                    <span className="font-semibold">Botones</span>
-                  </div>
+                <ResizablePanel defaultSize="25%" minSize="25%">
+                  <ButtonArea 
+                    wValue={wValue} 
+                    setWValue={setWValue}
+                    isWeightSet={isWeigthSet}
+                    handleSetWeight={handleSetWeight}
+                    handleReset={handleReset}  
+                  />
                 </ResizablePanel>
               </ResizablePanelGroup>
             </ResizablePanel>
@@ -50,37 +67,35 @@ const ProjectLayout = ({ numLayout }: ProjectLayoutProps) => {
   }
   else {
     return (
-      <Card className="w-full min-h-screen">
+      <Card className="w-full min-h-11/12 m-5">
         <CardContent className="h-full">
           <ResizablePanelGroup orientation="horizontal" className="h-full">
-            <ResizablePanel defaultSize="90%">
+            <ResizablePanel defaultSize="75%">
               <ResizablePanelGroup orientation="vertical" className="h-full">
                 <ResizablePanel defaultSize="50%">
-                  <div className="flex h-full items-center justify-center p-6">
-                    <span className="font-semibold">Gráficas</span>
-                  </div>
+                  <ChartsArea />
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize="50%">
-                  <div className="flex h-full items-center justify-center p-6">
-                    <span className="font-semibold">Modelo 3D</span>
-                  </div>
+                  <ModelArea />
                 </ResizablePanel>
               </ResizablePanelGroup>
             </ResizablePanel>
             <ResizableHandle withHandle />
-            <ResizablePanel defaultSize="10%">
+            <ResizablePanel defaultSize="25%" minSize="25%" maxSize="60%">
               <ResizablePanelGroup orientation="vertical" className="h-full">
                 <ResizablePanel defaultSize="65%">
-                  <div className="flex h-full items-center justify-center p-6">
-                    <span className="font-semibold">Mensajes</span>
-                  </div>
+                  <MessageArea />
                 </ResizablePanel>
                 <ResizableHandle withHandle />
-                <ResizablePanel defaultSize="35%">
-                  <div className="flex h-full items-center justify-center p-6">
-                    <span className="font-semibold">Botones</span>
-                  </div>
+                <ResizablePanel defaultSize="35%" minSize="25%">
+                  <ButtonArea 
+                    wValue={wValue} 
+                    setWValue={setWValue}
+                    isWeightSet={isWeigthSet}
+                    handleSetWeight={handleSetWeight}
+                    handleReset={handleReset}  
+                  />
                 </ResizablePanel>
               </ResizablePanelGroup>
             </ResizablePanel>
