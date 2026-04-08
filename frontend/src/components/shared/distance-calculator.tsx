@@ -3,7 +3,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { SidebarGroup, SidebarGroupLabel } from "@/components/ui/sidebar"
 import { Field, FieldContent, FieldDescription, FieldGroup, FieldLabel, FieldTitle } from "../ui/field"
 import { Slider } from "@/components/ui/slider"
-import { Button } from "../ui/button"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { useState } from "react"
 
 const DistanceCalculator = () => {
@@ -56,7 +57,16 @@ const DistanceCalculator = () => {
                                     <div className="flex items-center justify-between gap-2">
                                         <FieldLabel htmlFor="slider-weight-sidebar">Weight</FieldLabel>
                                         <span className="text-sm text-muted-foreground">
-                                            {wValue}
+                                            <Input
+                                                className="w-15 text-center"
+                                                type="text"
+                                                value={wValue[0]}
+                                                onChange={(e: any) => {
+                                                    const val = e.target.value
+                                                    setWValue([val])
+                                                }}
+                                            />
+                                            {" kg"}
                                         </span>
                                     </div>
                                     <Slider
@@ -65,7 +75,7 @@ const DistanceCalculator = () => {
                                         onValueChange={setWValue}
                                         min={30}
                                         max={300}
-                                        step={1}
+                                        step={0.01}
                                     />
                                 </div>
                             </Field>
@@ -74,7 +84,16 @@ const DistanceCalculator = () => {
                                     <div className="flex items-center justify-between gap-2">
                                         <FieldLabel htmlFor="slider-distance">Position</FieldLabel>
                                         <span className="text-sm text-muted-foreground">
-                                            {position}
+                                            <Input
+                                                className="w-15 text-center"
+                                                type="text"
+                                                value={position[0]}
+                                                onChange={(e: any) => {
+                                                    const val = e.target.value
+                                                    setPosition([val])
+                                                }}
+                                            />
+                                            {" m"}
                                         </span>
                                     </div>
                                     <Slider
@@ -83,7 +102,7 @@ const DistanceCalculator = () => {
                                         onValueChange={setPosition}
                                         min={0}
                                         max={50}
-                                        step={1}
+                                        step={0.01}
                                     />
                                 </div>
                             </Field>
