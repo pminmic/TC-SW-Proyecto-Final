@@ -11,21 +11,45 @@ import MessageArea from "./message-area"
 import ModelArea from "./model-area"
 
 type ProjectLayoutProps = {
-  numLayout: number
+  numLayout: number,
+  variableSelected: any
 }
 
-const ProjectLayout = ({ numLayout }: ProjectLayoutProps) => {
+const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
+
+  type PayloadType = any
 
   const [wValue, setWValue] = useState([90])
   const [isWeigthSet, setIsWeightSet] = useState(false)
+  const [payload, setPayload] = useState<PayloadType[]>([])
 
-    const handleSetWeight = () => {
-        setIsWeightSet(true)
-    }
+  const socket = new WebSocket("ws://localhost:5001/backend/stream")
 
-    const handleReset = () => {
-        setIsWeightSet(false)
+  socket.onmessage = (event: MessageEvent) => {
+    try {
+      const jsonData = JSON.parse(event.data)
+
+      if (jsonData.topic === "data") {
+        setPayload(prev => {
+          const payload = jsonData.payload as PayloadType
+          const next = [...prev, payload]
+          if (next.length > 10) next.shift()
+          return next
+        })
+      }
     }
+    catch (e: any) {
+      console.error(`Error al parsear: ${e}`)
+    }
+  }
+
+  const handleSetWeight = () => {
+    setIsWeightSet(true)
+  }
+
+  const handleReset = () => {
+    setIsWeightSet(false)
+  }
 
   if (numLayout === 1) {
     return (
@@ -36,7 +60,10 @@ const ProjectLayout = ({ numLayout }: ProjectLayoutProps) => {
         <CardContent className="h-full">
           <ResizablePanelGroup orientation="vertical" className="h-full">
             <ResizablePanel defaultSize="65%">
-              <ChartsArea />
+              <ChartsArea
+                variableSelected={variableSelected}
+                payload={payload}
+              />
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize="35%" minSize="25%">
@@ -50,12 +77,12 @@ const ProjectLayout = ({ numLayout }: ProjectLayoutProps) => {
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize="25%" minSize="25%">
-                  <ButtonArea 
-                    wValue={wValue} 
+                  <ButtonArea
+                    wValue={wValue}
                     setWValue={setWValue}
                     isWeightSet={isWeigthSet}
                     handleSetWeight={handleSetWeight}
-                    handleReset={handleReset}  
+                    handleReset={handleReset}
                   />
                 </ResizablePanel>
               </ResizablePanelGroup>
@@ -73,7 +100,10 @@ const ProjectLayout = ({ numLayout }: ProjectLayoutProps) => {
             <ResizablePanel defaultSize="75%">
               <ResizablePanelGroup orientation="vertical" className="h-full">
                 <ResizablePanel defaultSize="50%">
-                  <ChartsArea />
+                  <ChartsArea
+                    variableSelected={variableSelected}
+                    payload={payload}
+                  />
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize="50%">
@@ -89,12 +119,12 @@ const ProjectLayout = ({ numLayout }: ProjectLayoutProps) => {
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize="35%" minSize="25%">
-                  <ButtonArea 
-                    wValue={wValue} 
+                  <ButtonArea
+                    wValue={wValue}
                     setWValue={setWValue}
                     isWeightSet={isWeigthSet}
                     handleSetWeight={handleSetWeight}
-                    handleReset={handleReset}  
+                    handleReset={handleReset}
                   />
                 </ResizablePanel>
               </ResizablePanelGroup>

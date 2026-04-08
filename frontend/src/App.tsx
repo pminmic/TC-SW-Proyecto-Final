@@ -26,7 +26,10 @@ export function App() {
         handleChangeVariableSelected={setVariableSelected}
         variableSelected={variableSelected}
       />
-      <ProjectLayout numLayout={numLayout} />
+      <ProjectLayout 
+        numLayout={numLayout} 
+        variableSelected={variableSelected}
+      />
     </>
   )
 }
