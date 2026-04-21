@@ -6,6 +6,7 @@ import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
+import WeightInput from "./weight-input"
 
 const DistanceCalculator = () => {
 
@@ -18,7 +19,7 @@ const DistanceCalculator = () => {
 
         const getDistance = async () => {
 
-            const response = await fetch(`http://localhost:8001/api/calculate?m=${wValue}&d=${position}`)
+            const response = await fetch(`http://localhost:8001/api/calculate?m=${wValue[0]}&d=${50-position[0]}`)
 
             if (response.ok) {
                 const data = await response.json()
@@ -55,33 +56,6 @@ const DistanceCalculator = () => {
                             <Field>
                                 <div className="mx-auto grid gap-3">
                                     <div className="flex items-center justify-between gap-2">
-                                        <FieldLabel htmlFor="slider-weight-sidebar">Weight</FieldLabel>
-                                        <span className="text-sm text-muted-foreground">
-                                            <Input
-                                                className="w-15 text-center"
-                                                type="text"
-                                                value={wValue[0]}
-                                                onChange={(e: any) => {
-                                                    const val = e.target.value
-                                                    setWValue([val])
-                                                }}
-                                            />
-                                            {" kg"}
-                                        </span>
-                                    </div>
-                                    <Slider
-                                        id="slider-weight-sidebar"
-                                        value={wValue}
-                                        onValueChange={setWValue}
-                                        min={30}
-                                        max={300}
-                                        step={0.01}
-                                    />
-                                </div>
-                            </Field>
-                            <Field>
-                                <div className="mx-auto grid gap-3">
-                                    <div className="flex items-center justify-between gap-2">
                                         <FieldLabel htmlFor="slider-distance">Position</FieldLabel>
                                         <span className="text-sm text-muted-foreground">
                                             <Input
@@ -106,6 +80,7 @@ const DistanceCalculator = () => {
                                     />
                                 </div>
                             </Field>
+                            <WeightInput wValue={wValue[0]} setWValue={setWValue} isWeightSet={false} isInvalid={false} />
                             <Field>
                                 <Button type="submit">
                                     Calculate
