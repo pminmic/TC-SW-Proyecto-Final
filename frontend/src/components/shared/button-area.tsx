@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { ButtonGroup } from "@/components/ui/button-group"
+import { toast } from "sonner"
 import WeightInput from "./weight-input"
 
 type ButtonAreaProps = {
@@ -14,6 +15,82 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
 
     const isInvalid = typeof wValue[0] === "string" && isNaN(parseFloat(wValue[0]))
 
+    const handlePrecharge = async () => {
+        try {
+            const response = await fetch("http://localhost:8001/api/command", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "command": "PRECHARGE"
+                })
+            })
+
+            if (response.ok) {
+                toast.success("Precharge successful!")
+            }
+            else {
+                const errorText = await response.text()
+                toast.error("Error precharging: " + errorText)
+            }
+
+        } catch (error) {
+            toast.error("Error precharging: " + error)
+        }
+    }
+
+    const handleStart = async () => {
+        try {
+            const response = await fetch("http://localhost:8001/api/command", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "command": "START",
+                    "payload": {
+                        "mass": wValue[0]
+                    }
+                })
+            })
+
+            if (response.ok) {
+                toast.success("Started successfully!")
+            }
+            else {
+                const errorText = await response.text()
+                toast.error("Error starting: " + errorText)
+            }
+
+        } catch (error) {
+            toast.error("Error starting:" + error)
+        }
+    }
+
+    const handleBreak = async () => {
+        try {
+            const response = await fetch("http://localhost:8001/api/command", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ "command": "BRAKE" })
+            })
+
+            if (response.ok) {
+                toast.success("Braking successfully!")
+            }
+            else {
+                const errorText = await response.text()
+                toast.error("Error braking: " + errorText)
+            }
+
+        } catch (error) {
+            toast.error("Error braking: " + error)
+        }
+    }
+
     return (
         <div className="flex flex-col items-center justify-center h-full">
             <ButtonGroup className="flex-wrap justify-center gap-4 mb-6">
@@ -21,6 +98,7 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
                     <Button
                         disabled={!isWeightSet}
                         className="p-5 w-20 text-amber-700 hover:bg-amber-400 bg-amber-500"
+                        onClick={handlePrecharge}
                     >
                         PRECHARGE
                     </Button>
@@ -30,6 +108,7 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
                         disabled={!isWeightSet}
                         className="p-5 w-20 bg-green-800 hover:bg-green-700 text-green-300 "
                         size="lg"
+                        onClick={handleStart}
                     >
                         START
                     </Button>
@@ -39,8 +118,9 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
                         disabled={!isWeightSet}
                         className="p-5 w-20"
                         variant="destructive"
+                        onClick={handleBreak}
                     >
-                        BREAK
+                        BRAKE
                     </Button>
                 </ButtonGroup>
                 <ButtonGroup>

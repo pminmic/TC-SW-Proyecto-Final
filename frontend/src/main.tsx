@@ -5,6 +5,7 @@ import "./index.css"
 import App from "./App.tsx"
 import { ThemeProvider } from "@/components/theme-provider.tsx"
 import { SidebarProvider } from "./components/ui/sidebar.tsx"
+import { Toaster } from "sonner"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -16,6 +17,7 @@ createRoot(document.getElementById("root")!).render(
         } as React.CSSProperties
       }>
         <App />
+        <Toaster position="top-right"/>
       </SidebarProvider>
     </ThemeProvider>
   </StrictMode>

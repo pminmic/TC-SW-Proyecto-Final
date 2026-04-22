@@ -16,6 +16,14 @@ const CHART_CONFIGS: Record<string, ChartConfig> = {
     intensity: { intensity: { label: "Intensity (A)", color: "#ff00ff" } },
 }
 
+const DOMAIN_CONFIGS: Record<string, [number, number]> = {
+    voltage: [0, 400],
+    acceleration: [0, 25],
+    velocity: [0, 40],
+    force: [0, 400],
+    intensity: [0, 40],
+}
+
 const tickFormatter = (val: any) => new Date(val).toLocaleTimeString()
 
 const ChartsArea = ({ variableSelected, payload }: ChartsAreaProps) => {
@@ -52,7 +60,9 @@ const ChartsArea = ({ variableSelected, payload }: ChartsAreaProps) => {
                             value: CHART_CONFIGS[key][key].label,
                             angle: -90,
                             position: 'insideLeft'
-                        }} />
+                        }}
+                        domain={DOMAIN_CONFIGS[key]}
+                        />
                         <ChartTooltip content={<ChartTooltipContent />} />
                         <Line
                             type="monotone"

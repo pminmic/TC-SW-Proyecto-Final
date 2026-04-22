@@ -9,6 +9,7 @@ import ButtonArea from "./button-area"
 import ChartsArea from "./charts-area"
 import MessageArea from "./message-area"
 import ModelArea from "./model-area"
+import { toast } from "sonner"
 
 type ProjectLayoutProps = {
   numLayout: number,
@@ -53,7 +54,29 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
     setIsWeightSet(true)
   }
 
-  const handleReset = () => {
+  const handleReset = async () => {
+
+    try {
+      const response = await fetch("http://localhost:8001/api/command", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ "command": "RESET" })
+      })
+
+      if (response.ok) {
+        toast.success("Reset successful!")
+      }
+      else {
+        const errorText = await response.text()
+        toast.error("Error resetting: " + errorText)
+      }
+    }
+    catch (error) {
+      toast.error("Error resetting: " + error)
+    }  
+
     setIsWeightSet(false)
   }
 

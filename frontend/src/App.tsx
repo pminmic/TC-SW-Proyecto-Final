@@ -6,7 +6,7 @@ export function App() {
 
   const [numLayout, setNumLayout] = useState(1);
   const [variableSelected, setVariableSelected] = useState({
-    voltage: false,
+    voltage: true,
     acceleration: false,
     velocity: false,
     force: false,
