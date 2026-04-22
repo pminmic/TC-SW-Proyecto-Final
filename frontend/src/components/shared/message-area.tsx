@@ -1,11 +1,20 @@
-const MessageArea = () => {
+import MessageContent from "./message-content"
+
+type MessageAreaProps = {
+    messages: [string, string][]
+}
+
+const MessageArea = ({ messages }: MessageAreaProps) => {
 
 
     return (
-        <div className="flex h-full items-center justify-center p-6">
-            <span className="font-semibold">Mensajes</span>
+        <div className="h-full w-full p-2 flex flex-col align-center overflow-y-auto">
+            {messages.map(([type, content], idx) => (
+                <MessageContent key={idx} type={type} content={content} />
+            ))}
         </div>
-    )
+    
+)
 }
 
 export default MessageArea
