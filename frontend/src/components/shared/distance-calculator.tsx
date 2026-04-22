@@ -36,7 +36,7 @@ const DistanceCalculator = () => {
     }
 
     return (
-        <Collapsible defaultOpen className="group/collapsible">
+        <Collapsible defaultOpen className="group/collapsible group-data-[collapsible=icon]:hidden">
             <SidebarGroup>
                 <SidebarGroupLabel asChild>
                     <CollapsibleTrigger>

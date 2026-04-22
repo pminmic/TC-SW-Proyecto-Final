@@ -9,7 +9,12 @@ import { SidebarProvider } from "./components/ui/sidebar.tsx"
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider>
-      <SidebarProvider>
+      <SidebarProvider
+        style={{
+          "--sidebar-width": "16rem",
+          "--sidebar-width-icon": "4rem", 
+        } as React.CSSProperties
+      }>
         <App />
       </SidebarProvider>
     </ThemeProvider>

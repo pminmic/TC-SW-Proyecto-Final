@@ -25,119 +25,91 @@ type VariableCheckboxProps = {
     handleChangeSelected: (args: any) => void
 }
 
-const VariableCheckbox = ({voltageCheck, accelerationCheck, velocityCheck, forceCheck, intensityCheck, handleChangeSelected}: VariableCheckboxProps) => {
+const variables = [
+    { id: "voltage",      label: "Voltage",      initial: "V" },
+    { id: "acceleration", label: "Acceleration",  initial: "A" },
+    { id: "velocity",     label: "Velocity",      initial: "v" },
+    { id: "force",        label: "Force",         initial: "F" },
+    { id: "intensity",    label: "Intensity",     initial: "I" },
+]
+
+const VariableCheckbox = ({
+    voltageCheck,
+    accelerationCheck,
+    velocityCheck,
+    forceCheck,
+    intensityCheck,
+    handleChangeSelected
+}: VariableCheckboxProps) => {
+
+    const checks: Record<string, boolean> = {
+        voltage:      voltageCheck,
+        acceleration: accelerationCheck,
+        velocity:     velocityCheck,
+        force:        forceCheck,
+        intensity:    intensityCheck,
+    }
+
+    const buildPayload = (changedKey: string) =>
+        Object.fromEntries(
+            variables.map(v => [v.id, v.id === changedKey ? !checks[v.id] : checks[v.id]])
+        )
 
     return (
         <Collapsible defaultOpen className="group/collapsible">
             <SidebarGroup>
+
+                {/* ── Trigger: siempre visible ── */}
                 <SidebarGroupLabel asChild>
                     <CollapsibleTrigger>
                         <IconChartColumn />
-                        <span className="text-lg pl-2">
+                        {/* Texto y flecha solo en modo expandido */}
+                        <span className="text-lg pl-2 group-data-[collapsible=icon]:hidden">
                             Variables
                         </span>
-                        <IconChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                        <IconChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180 group-data-[collapsible=icon]:hidden" />
                     </CollapsibleTrigger>
                 </SidebarGroupLabel>
-                <CollapsibleContent className="py-2 px-4">
+
+                {/* ── Vista EXPANDIDA: checkboxes con texto completo ── */}
+                <CollapsibleContent className="py-2 px-4 group-data-[collapsible=icon]:hidden">
                     <SidebarMenu>
-                        <SidebarMenuItem className="mb-2">
-                            <Field orientation="horizontal">
-                                <Checkbox
-                                    id="voltage-checkbox"
-                                    checked={voltageCheck}
-                                    onCheckedChange={() => handleChangeSelected({
-                                        voltage: !voltageCheck,
-                                        acceleration: accelerationCheck,
-                                        velocity: velocityCheck,
-                                        force: forceCheck,
-                                        intensity: intensityCheck
-                                    })}
-                                />
-                                <FieldLabel
-                                    htmlFor="voltage-checkbox"
-                                    className="font-normal text-sm"
-                                >Voltage</FieldLabel>
-                            </Field>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem className="mb-2">
-                            <Field orientation="horizontal">
-                                <Checkbox
-                                    id="acceleration-checkbox"
-                                    checked={accelerationCheck}
-                                    onCheckedChange={() => handleChangeSelected({
-                                        voltage: voltageCheck,
-                                        acceleration: !accelerationCheck,
-                                        velocity: velocityCheck,
-                                        force: forceCheck,
-                                        intensity: intensityCheck
-                                    })}
-                                />
-                                <FieldLabel
-                                    htmlFor="acceleration-checkbox"
-                                    className="font-normal text-sm"
-                                >Acceleration</FieldLabel>
-                            </Field>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem className="mb-2">
-                            <Field orientation="horizontal">
-                                <Checkbox
-                                    id="velocity-checkbox"
-                                    checked={velocityCheck}
-                                    onCheckedChange={() => handleChangeSelected({
-                                        voltage: voltageCheck,
-                                        acceleration: accelerationCheck,
-                                        velocity: !velocityCheck,
-                                        force: forceCheck,
-                                        intensity: intensityCheck
-                                    })}
-                                />
-                                <FieldLabel
-                                    htmlFor="velocity-checkbox"
-                                    className="font-normal text-sm"
-                                >Velocity</FieldLabel>
-                            </Field>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem className="mb-2">
-                            <Field orientation="horizontal">
-                                <Checkbox
-                                    id="force-checkbox"
-                                    checked={forceCheck}
-                                    onCheckedChange={() => handleChangeSelected({
-                                        voltage: voltageCheck,
-                                        acceleration: accelerationCheck,
-                                        velocity: velocityCheck,
-                                        force: !forceCheck,
-                                        intensity: intensityCheck
-                                    })}
-                                />
-                                <FieldLabel
-                                    htmlFor="force-checkbox"
-                                    className="font-normal text-sm"
-                                >Force</FieldLabel>
-                            </Field>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem className="mb-2">
-                            <Field orientation="horizontal">
-                                <Checkbox
-                                    id="intensity-checkbox"
-                                    checked={intensityCheck}
-                                    onCheckedChange={() => handleChangeSelected({
-                                        voltage: voltageCheck,
-                                        acceleration: accelerationCheck,
-                                        velocity: velocityCheck,
-                                        force: forceCheck,
-                                        intensity: !intensityCheck
-                                    })}
-                                />
-                                <FieldLabel
-                                    htmlFor="intensity-checkbox"
-                                    className="font-normal text-sm"
-                                >Intensity</FieldLabel>
-                            </Field>
-                        </SidebarMenuItem>
+                        {variables.map(v => (
+                            <SidebarMenuItem key={v.id} className="mb-2">
+                                <Field orientation="horizontal">
+                                    <Checkbox
+                                        id={`${v.id}-checkbox`}
+                                        checked={checks[v.id]}
+                                        onCheckedChange={() => handleChangeSelected(buildPayload(v.id))}
+                                    />
+                                    <FieldLabel
+                                        htmlFor={`${v.id}-checkbox`}
+                                        className="font-normal text-sm"
+                                    >
+                                        {v.label}
+                                    </FieldLabel>
+                                </Field>
+                            </SidebarMenuItem>
+                        ))}
                     </SidebarMenu>
                 </CollapsibleContent>
+
+                {/* ── Vista COLAPSADA: checkbox + inicial, sin CollapsibleContent ── */}
+                <div className="hidden group-data-[collapsible=icon]:flex flex-col items-center gap-2 py-2">
+                    {variables.map(v => (
+                        <div key={v.id} className="flex items-center gap-2">
+                            <Checkbox
+                                id={`${v.id}-checkbox-mini`}
+                                checked={checks[v.id]}
+                                onCheckedChange={() => handleChangeSelected(buildPayload(v.id))}
+                            />
+                            <span className="text-[10px] font-medium text-muted-foreground leading-none">
+                                {v.initial}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+
             </SidebarGroup>
         </Collapsible>
     )

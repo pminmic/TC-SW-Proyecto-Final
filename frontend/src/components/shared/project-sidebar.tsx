@@ -7,15 +7,16 @@ import {
     SidebarMenuItem,
     SidebarMenuButton,
     SidebarRail,
-    SidebarMenuBadge,
     SidebarGroup,
-    SidebarGroupLabel
+    SidebarGroupLabel,
+    SidebarTrigger
 } from "@/components/ui/sidebar"
 import { IconChevronDown, IconRocket } from "@tabler/icons-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import VariableCheckbox from "./variable-checkbox"
 import { Separator } from "@/components/ui/separator"
 import DistanceCalculator from "./distance-calculator"
+import CustomSidebarTrigger from "./custom-sidebar-trigger"
 
 type ProjectSidebarProps = {
     handleChangeLayout: (num: number) => void,
@@ -34,10 +35,12 @@ const ProjectSidebar = ({ handleChangeLayout, numLayout, handleChangeVariableSel
 
     return (
         <>
-            <Sidebar>
+            <Sidebar collapsible="icon">
                 <SidebarHeader className="text-xl flex-row items-center ml-2 mt-2">
-                    <IconRocket />
-                    <span className="ml-2">Bancada Booster</span>
+                    
+                    <CustomSidebarTrigger />
+                    
+                    <span className="group-data-[collapsible=icon]:hidden">Bancada Booster</span>
                 </SidebarHeader>
                 <SidebarContent>
                     <VariableCheckbox
@@ -46,12 +49,12 @@ const ProjectSidebar = ({ handleChangeLayout, numLayout, handleChangeVariableSel
                         velocityCheck={variableSelected.velocity}
                         forceCheck={variableSelected.force}
                         intensityCheck={variableSelected.intensity}
-                        handleChangeSelected={handleChangeVariableSelected}                        
+                        handleChangeSelected={handleChangeVariableSelected}
                     />
                     <Separator />
                     <DistanceCalculator />
                 </SidebarContent>
-                <SidebarFooter>
+                <SidebarFooter className="group-data-[collapsible=icon]:hidden">
                     <Collapsible defaultOpen className="group/collapsible">
                         <SidebarGroup>
                             <SidebarGroupLabel asChild>
