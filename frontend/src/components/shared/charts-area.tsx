@@ -9,11 +9,11 @@ type ChartsAreaProps = {
 
 // Configuration for each variable's chart
 const CHART_CONFIGS: Record<string, ChartConfig> = {
-    voltage:      { voltage:      { label: "Voltage (V)",       color: "#ffe600" } },
+    voltage: { voltage: { label: "Voltage (V)", color: "#ffe600" } },
     acceleration: { acceleration: { label: "Acceleration (m/s²)", color: "#00ff00" } },
-    velocity:     { velocity:     { label: "Velocity (km/h)",   color: "#0000ff" } },
-    force:        { force:        { label: "Force (N)",          color: "#ff0000" } },
-    intensity:    { intensity:    { label: "Intensity (A)",      color: "#ff00ff" } },
+    velocity: { velocity: { label: "Velocity (km/h)", color: "#0000ff" } },
+    force: { force: { label: "Force (N)", color: "#ff0000" } },
+    intensity: { intensity: { label: "Intensity (A)", color: "#ff00ff" } },
 }
 
 const tickFormatter = (val: any) => new Date(val).toLocaleTimeString()
@@ -21,11 +21,11 @@ const tickFormatter = (val: any) => new Date(val).toLocaleTimeString()
 const ChartsArea = ({ variableSelected, payload }: ChartsAreaProps) => {
 
     const chartData = useMemo(() => ({
-        voltage:      payload.map((n: any) => ({ time: n.timestamp, voltage: n.voltage_v })),
+        voltage: payload.map((n: any) => ({ time: n.timestamp, voltage: n.voltage_v })),
         acceleration: payload.map((n: any) => ({ time: n.timestamp, acceleration: n.acceleration_ms2 })),
-        velocity:     payload.map((n: any) => ({ time: n.timestamp, velocity: n.velocity_kmh })),
-        force:        payload.map((n: any) => ({ time: n.timestamp, force: n.mass_kg * 9.81 })),
-        intensity:    payload.map((n: any) => ({ time: n.timestamp, intensity: n.current_a })),
+        velocity: payload.map((n: any) => ({ time: n.timestamp, velocity: n.velocity_kmh })),
+        force: payload.map((n: any) => ({ time: n.timestamp, force: n.mass_kg * 9.81 })),
+        intensity: payload.map((n: any) => ({ time: n.timestamp, intensity: n.current_a })),
     }), [payload])
 
     const activeKeys = useMemo(() =>
@@ -48,7 +48,11 @@ const ChartsArea = ({ variableSelected, payload }: ChartsAreaProps) => {
                     <LineChart data={chartData[key]}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="time" tickFormatter={tickFormatter} />
-                        <YAxis />
+                        <YAxis label={{
+                            value: CHART_CONFIGS[key][key].label,
+                            angle: -90,
+                            position: 'insideLeft'
+                        }} />
                         <ChartTooltip content={<ChartTooltipContent />} />
                         <Line
                             type="monotone"
