@@ -24,7 +24,7 @@ const WeightInput = ({ wValue, setWValue, isWeightSet, isInvalid }: WeightInputP
                         value={wValue}
                         onChange={(e: any) => {
                             const val = e.target.value
-                            setWValue(val)
+                            setWValue([parseFloat(val) || 0])
                         }}
                     />
                     <span className="font-medium text-sm">kg</span>

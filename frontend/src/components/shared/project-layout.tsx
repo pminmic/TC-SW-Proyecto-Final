@@ -23,6 +23,7 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
   const [wValue, setWValue] = useState([90])
   const [isWeigthSet, setIsWeightSet] = useState(false)
   const [payload, setPayload] = useState<PayloadType[]>([])
+  const [messages, setMessages] = useState<[string, string][]>([])
 
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:5001/backend/stream")
@@ -38,6 +39,28 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
             if (next.length > 10) next.shift()
             return next
           })
+        }
+        if (jsonData.topic === "message") {
+          console.log("Message received:", jsonData.payload)
+          setMessages(prev => [[jsonData.payload.type, jsonData.payload.content], ...prev])
+          
+          if (jsonData.payload.type === "error") {
+            console.log("Showing error toast:", jsonData.payload.content)
+            toast.error("Error", { description: jsonData.payload.content })
+          }
+          else if (jsonData.payload.type === "success") {
+            console.log("Showing success toast:", jsonData.payload.content)
+            toast.success("Success", { description: jsonData.payload.content })
+          }
+          else if (jsonData.payload.type === "info") {
+            console.log("Showing info toast:", jsonData.payload.content)
+            toast.info("Info", { description: jsonData.payload.content })
+          }
+          else if (jsonData.payload.type === "critical") {
+            console.log("Showing warning toast:", jsonData.payload.content)
+            toast.warning("Critical", { description: jsonData.payload.content })
+          }
+        
         }
       }
       catch (e: any) {
@@ -65,16 +88,13 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
         body: JSON.stringify({ "command": "RESET" })
       })
 
-      if (response.ok) {
-        toast.success("Reset successful!")
-      }
-      else {
+      if (!response.ok) {
         const errorText = await response.text()
-        toast.error("Error resetting: ", { description: errorText })
+        toast.error("Error resetting", { description: errorText })
       }
     }
     catch (error) {
-      toast.error("Error resetting: ", { description: String(error) })
+      toast.error("Error resetting", { description: String(error) })
     }  
 
     setIsWeightSet(false)
@@ -98,7 +118,7 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
             <ResizablePanel defaultSize="35%" minSize="25%">
               <ResizablePanelGroup orientation="horizontal" className="h-full">
                 <ResizablePanel defaultSize="25%">
-                  <MessageArea />
+                  <MessageArea messages={messages} />
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize="50%">
@@ -144,7 +164,7 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
             <ResizablePanel defaultSize="25%" minSize="25%" maxSize="60%">
               <ResizablePanelGroup orientation="vertical" className="h-full">
                 <ResizablePanel defaultSize="65%">
-                  <MessageArea />
+                  <MessageArea messages={messages} />
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize="35%" minSize="25%">

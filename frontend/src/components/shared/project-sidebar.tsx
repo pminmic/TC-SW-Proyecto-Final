@@ -6,12 +6,10 @@ import {
     SidebarMenu,
     SidebarMenuItem,
     SidebarMenuButton,
-    SidebarRail,
     SidebarGroup,
-    SidebarGroupLabel,
-    SidebarTrigger
+    SidebarGroupLabel
 } from "@/components/ui/sidebar"
-import { IconChevronDown, IconRocket } from "@tabler/icons-react"
+import { IconChevronDown } from "@tabler/icons-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import VariableCheckbox from "./variable-checkbox"
 import { Separator } from "@/components/ui/separator"
@@ -37,9 +35,9 @@ const ProjectSidebar = ({ handleChangeLayout, numLayout, handleChangeVariableSel
         <>
             <Sidebar collapsible="icon">
                 <SidebarHeader className="text-xl flex-row items-center ml-2 mt-2">
-                    
+
                     <CustomSidebarTrigger />
-                    
+
                     <span className="group-data-[collapsible=icon]:hidden">Bancada Booster</span>
                 </SidebarHeader>
                 <SidebarContent>

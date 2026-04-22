@@ -27,16 +27,13 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
                 })
             })
 
-            if (response.ok) {
-                toast.success("Precharge successful!")
-            }
-            else {
+            if (!response.ok) {
                 const errorText = await response.text()
-                toast.error("Error precharging: ", { description: errorText })
+                toast.error("Error precharging", { description: errorText })
             }
 
         } catch (error) {
-            toast.error("Error precharging: ", { description: String(error) })
+            toast.error("Error precharging", { description: String(error) })
         }
     }
 
@@ -55,16 +52,13 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
                 })
             })
 
-            if (response.ok) {
-                toast.success("Started successfully!")
-            }
-            else {
+            if (!response.ok) {
                 const errorText = await response.text()
-                toast.error("Error starting: ", { description: errorText })
+                toast.error("Error starting", { description: errorText })
             }
 
         } catch (error) {
-            toast.error("Error starting:", {description: String(error)})
+            toast.error("Error starting", {description: String(error)})
         }
     }
 
@@ -78,16 +72,13 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
                 body: JSON.stringify({ "command": "BRAKE" })
             })
 
-            if (response.ok) {
-                toast.success("Braking successfully!")
-            }
-            else {
+            if (!response.ok) {
                 const errorText = await response.text()
-                toast.error("Error braking: ", { description: errorText })
+                toast.error("Error braking", { description: errorText })
             }
 
         } catch (error) {
-            toast.error("Error braking: ", { description: String(error) })
+            toast.error("Error braking", { description: String(error) })
         }
     }
 
