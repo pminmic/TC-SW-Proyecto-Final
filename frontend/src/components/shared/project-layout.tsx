@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   ResizableHandle,
   ResizablePanel,
@@ -23,25 +23,31 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
   const [isWeigthSet, setIsWeightSet] = useState(false)
   const [payload, setPayload] = useState<PayloadType[]>([])
 
-  const socket = new WebSocket("ws://localhost:5001/backend/stream")
+  useEffect(() => {
+    const socket = new WebSocket("ws://localhost:5001/backend/stream")
 
-  socket.onmessage = (event: MessageEvent) => {
-    try {
-      const jsonData = JSON.parse(event.data)
+    socket.onmessage = (event: MessageEvent) => {
+      try {
+        const jsonData = JSON.parse(event.data)
 
-      if (jsonData.topic === "data") {
-        setPayload(prev => {
-          const payload = jsonData.payload as PayloadType
-          const next = [...prev, payload]
-          if (next.length > 10) next.shift()
-          return next
-        })
+        if (jsonData.topic === "data") {
+          setPayload(prev => {
+            const payload = jsonData.payload as PayloadType
+            const next = [...prev, payload]
+            if (next.length > 10) next.shift()
+            return next
+          })
+        }
+      }
+      catch (e: any) {
+        console.error(`Error al parsear: ${e}`)
       }
     }
-    catch (e: any) {
-      console.error(`Error al parsear: ${e}`)
+
+    return () => {
+      socket.close()
     }
-  }
+  }, [])
 
   const handleSetWeight = () => {
     setIsWeightSet(true)
