@@ -32,11 +32,11 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
             }
             else {
                 const errorText = await response.text()
-                toast.error("Error precharging: " + errorText)
+                toast.error("Error precharging: ", { description: errorText })
             }
 
         } catch (error) {
-            toast.error("Error precharging: " + error)
+            toast.error("Error precharging: ", { description: String(error) })
         }
     }
 
@@ -60,11 +60,11 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
             }
             else {
                 const errorText = await response.text()
-                toast.error("Error starting: " + errorText)
+                toast.error("Error starting: ", { description: errorText })
             }
 
         } catch (error) {
-            toast.error("Error starting:" + error)
+            toast.error("Error starting:", {description: String(error)})
         }
     }
 
@@ -83,11 +83,11 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
             }
             else {
                 const errorText = await response.text()
-                toast.error("Error braking: " + errorText)
+                toast.error("Error braking: ", { description: errorText })
             }
 
         } catch (error) {
-            toast.error("Error braking: " + error)
+            toast.error("Error braking: ", { description: String(error) })
         }
     }
 

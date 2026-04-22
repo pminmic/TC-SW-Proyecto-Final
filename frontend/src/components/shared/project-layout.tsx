@@ -70,11 +70,11 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
       }
       else {
         const errorText = await response.text()
-        toast.error("Error resetting: " + errorText)
+        toast.error("Error resetting: ", { description: errorText })
       }
     }
     catch (error) {
-      toast.error("Error resetting: " + error)
+      toast.error("Error resetting: ", { description: String(error) })
     }  
 
     setIsWeightSet(false)
