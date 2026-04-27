@@ -1,8 +1,0 @@
-# Artefactos de compilación de Cargo
-target
-
-# Si estás haciendo una librería (no un binario), comenta la siguiente línea
-Cargo.lock
-
-# Archivos de respaldo de rustfmt
-**/*.rs.bk

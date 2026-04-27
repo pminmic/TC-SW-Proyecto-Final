@@ -1,3 +1,16 @@
+# BACKEND IGNORE FILE
+
+# Rust compilation artifacts
+target
+
+# Lock file
+Cargo.lock
+
+# Backup files
+**/*.rs.bk
+
+# FRONTEND IGNORE FILE
+
 # Logs
 logs
 *.log
