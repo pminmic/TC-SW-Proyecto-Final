@@ -2,14 +2,7 @@ import { Button } from "@/components/ui/button"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { toast } from "sonner"
 import WeightInput from "./weight-input"
-
-type ButtonAreaProps = {
-    wValue: number[],
-    setWValue: (num: number[]) => void,
-    isWeightSet: boolean,
-    handleSetWeight: () => void,
-    handleReset: () => void
-}
+import type { ButtonAreaProps } from "@/types/props"
 
 const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleReset }: ButtonAreaProps) => {
 

@@ -1,8 +1,6 @@
 import MessageContent from "./message-content"
+import type { MessageAreaProps } from "@/types/props"
 
-type MessageAreaProps = {
-    messages: [string, string][]
-}
 
 const MessageArea = ({ messages }: MessageAreaProps) => {
 

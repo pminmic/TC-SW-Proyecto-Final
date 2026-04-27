@@ -10,15 +10,14 @@ import ChartsArea from "./charts-area"
 import MessageArea from "./message-area"
 import ModelArea from "./model-area"
 import { toast } from "sonner"
+import HeaderData from "./header-data"
+import type { PayloadType } from "@/types/types"
+import type { ProjectLayoutProps } from "@/types/props"
 
-type ProjectLayoutProps = {
-  numLayout: number,
-  variableSelected: any
-}
 
 const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
 
-  type PayloadType = any
+
 
   const [wValue, setWValue] = useState([90])
   const [isWeigthSet, setIsWeightSet] = useState(false)
@@ -36,7 +35,7 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
           setPayload(prev => {
             const payload = jsonData.payload as PayloadType
             const next = [...prev, payload]
-            if (next.length > 10) next.shift()
+            if (next.length > 20) next.shift()
             return next
           })
         }
@@ -100,11 +99,13 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
     setIsWeightSet(false)
   }
 
+  const headerData = payload.length > 0 ? payload[payload.length - 1] : null
+
   if (numLayout === 1) {
     return (
       <Card className="w-full min-h-11/12 m-5">
         <CardHeader>
-          Hola babay
+          <HeaderData payload={headerData} />
         </CardHeader>
         <CardContent className="h-full">
           <ResizablePanelGroup orientation="vertical" className="h-full">
@@ -144,6 +145,9 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
   else {
     return (
       <Card className="w-full min-h-11/12 m-5">
+        <CardHeader>
+          <HeaderData payload={headerData} />
+        </CardHeader>
         <CardContent className="h-full">
           <ResizablePanelGroup orientation="horizontal" className="h-full">
             <ResizablePanel defaultSize="75%">

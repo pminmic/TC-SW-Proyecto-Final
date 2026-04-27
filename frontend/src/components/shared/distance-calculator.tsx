@@ -7,12 +7,13 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import WeightInput from "./weight-input"
+import type { CalculatedDistance } from "@/types/types"
 
 const DistanceCalculator = () => {
 
     const [wValue, setWValue] = useState([90])
     const [position, setPosition] = useState([25])
-    const [result, setResult] = useState<any>(null)
+    const [result, setResult] = useState<CalculatedDistance>(null)
 
     const handleSubmitDistance = (event: any) => {
         event.preventDefault()
@@ -26,7 +27,7 @@ const DistanceCalculator = () => {
                 setResult(data.braking_position_m)
             }
             else {
-                setResult(response.text())
+                setResult(await response.text())
             }
 
 

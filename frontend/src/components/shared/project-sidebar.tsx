@@ -15,19 +15,7 @@ import VariableCheckbox from "./variable-checkbox"
 import { Separator } from "@/components/ui/separator"
 import DistanceCalculator from "./distance-calculator"
 import CustomSidebarTrigger from "./custom-sidebar-trigger"
-
-type ProjectSidebarProps = {
-    handleChangeLayout: (num: number) => void,
-    numLayout: number,
-    handleChangeVariableSelected: (dict: any) => void,
-    variableSelected: {
-        voltage: boolean,
-        acceleration: boolean,
-        velocity: boolean,
-        force: boolean,
-        intensity: boolean,
-    }
-}
+import type { ProjectSidebarProps } from "@/types/props"
 
 const ProjectSidebar = ({ handleChangeLayout, numLayout, handleChangeVariableSelected, variableSelected }: ProjectSidebarProps) => {
 

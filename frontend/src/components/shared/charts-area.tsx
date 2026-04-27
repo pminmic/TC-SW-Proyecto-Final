@@ -1,11 +1,9 @@
 import { useMemo } from "react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "../ui/chart"
+import type { ChartsAreaProps } from "@/types/props"
 
-type ChartsAreaProps = {
-    variableSelected: any,
-    payload: any
-}
+
 
 // Configuration for each variable's chart
 const CHART_CONFIGS: Record<string, ChartConfig> = {
@@ -18,10 +16,10 @@ const CHART_CONFIGS: Record<string, ChartConfig> = {
 
 const DOMAIN_CONFIGS: Record<string, [number, number]> = {
     voltage: [0, 400],
-    acceleration: [0, 25],
+    acceleration: [-10, 30],
     velocity: [0, 40],
     force: [0, 400],
-    intensity: [0, 40],
+    intensity: [0, 200],
 }
 
 const tickFormatter = (val: any) => new Date(val).toLocaleTimeString()

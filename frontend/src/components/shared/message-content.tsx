@@ -1,9 +1,5 @@
 import { IconAlertTriangle, IconCircleDashedCheck, IconCircleX, IconInfoOctagon,  } from "@tabler/icons-react"
-
-type MessageContentProps = {
-    type: string,
-    content: string
-}
+import type { MessageContentProps } from "@/types/props"
 
 const MessageContent = ({ type, content }: MessageContentProps) => {
 

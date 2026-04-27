@@ -1,13 +1,7 @@
 import { Field, FieldDescription } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
-type WeightInputProps = {
-    wValue: number,
-    setWValue: (num: number[]) => void,
-    isWeightSet: boolean,
-    isInvalid: boolean
-}
+import { type WeightInputProps } from "@/types/props"
 
 const WeightInput = ({ wValue, setWValue, isWeightSet, isInvalid }: WeightInputProps) => {
 

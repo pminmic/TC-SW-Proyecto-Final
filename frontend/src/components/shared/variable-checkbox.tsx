@@ -15,15 +15,8 @@ import {
 } from "@/components/ui/field"
 import { Checkbox } from "@/components/ui/checkbox"
 import { IconChartColumn, IconChevronDown } from "@tabler/icons-react"
+import type { VariableCheckboxProps } from "@/types/props"
 
-type VariableCheckboxProps = {
-    voltageCheck: boolean,
-    accelerationCheck: boolean,
-    velocityCheck: boolean,
-    forceCheck: boolean,
-    intensityCheck: boolean,
-    handleChangeSelected: (args: any) => void
-}
 
 const variables = [
     { id: "voltage",      label: "Voltage",      initial: "V" },

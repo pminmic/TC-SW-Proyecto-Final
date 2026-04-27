@@ -10,9 +10,7 @@ import { Toaster } from "sonner"
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider
-      attribute="class"
       defaultTheme="system"
-      enableSystem
     >
       <SidebarProvider
         style={{
@@ -21,7 +19,7 @@ createRoot(document.getElementById("root")!).render(
         } as React.CSSProperties
         }>
         <App />
-        <Toaster position="top-right" />
+        <Toaster position="top-center" />
       </SidebarProvider>
     </ThemeProvider>
   </StrictMode>
