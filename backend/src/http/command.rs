@@ -1,4 +1,9 @@
-use axum::{Json};
+use axum::{
+    Json,
+    extract::State
+};
+use crate::config::State as SimState;
+use crate::physics::simulator::SharedSim;
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
@@ -17,18 +22,41 @@ pub enum Command {
     Reset
 }
 
-pub async fn command(Json(cmd): Json<Command>) {
+pub async fn command(State(sim): State<SharedSim>, Json(cmd): Json<Command>) {
+
+    let mut s = sim.lock().await;
     match cmd {
         Command::Precharge => {
-            println!("Se ha pulsado PRECHARGE");
+            if s.get_state().eq(&SimState::Idle) {
+                s.set_state(SimState::Precharge);
+                println!("Se ha pulsado PRECHARGE");
+            }
+            else {
+                println!("Error: PRECHARGE solo se puede pulsar desde el estado IDLE");
+            }
         },
         Command::Start { payload } => {
-            println!("Se ha pulsado START con payload: {:?}", payload.mass);
+            if s.get_state().eq(&SimState::Ready) {
+                s.set_mass(payload.mass);
+                s.set_state(SimState::Running);
+                println!("Se ha pulsado START con payload: {:?}", payload.mass);
+
+            }
+            else {
+                println!("Error: START solo se puede pulsar desde el estado READY");
+            }
         }
         Command::Brake => {
-            println!("Se ha pulsado BRAKE");
+            if s.get_state().eq(&SimState::Running) || s.get_state().eq(&SimState::Boosting) {
+                s.set_state(SimState::Braking);
+                println!("Se ha pulsado BRAKE");
+            }
+            else {
+                println!("Error: BRAKE solo se puede pulsar desde los estados RUNNING o BOOSTING");
+            }
         }
         Command::Reset => {
+            s.reset();
             println!("Se ha pulsado RESET");
         }
     }
