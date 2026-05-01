@@ -1,3 +1,6 @@
+use crate::physics::simulator::{SharedSim, SimSnapshot};
+use tokio::sync::broadcast;
+
 pub const SIM_SPEED: f32 = 0.2;
 pub const AFTER_BOOSTER_VELOCITY: f32 = 25.0; // In km/h
 pub const BRAKE_FORCE: f32 = 196.0; // Newtons
@@ -13,5 +16,11 @@ pub enum State {
     Boosting,
     Braking,
     Stopped,
-    Crashed
+    Crashed,
+}
+
+#[derive(Clone)]
+pub struct AppState {
+    pub sim: SharedSim,
+    pub broadcast: broadcast::Sender<SimSnapshot>,
 }

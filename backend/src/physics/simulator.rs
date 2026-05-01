@@ -1,17 +1,34 @@
-use crate::config::{State, SIM_SPEED};
-use crate::config::{AFTER_BOOSTER_VELOCITY, BEFORE_BOOSTER_VELOCITY, BRAKE_FORCE, MAX_CURRENT_A};
+use crate::config::{
+    AFTER_BOOSTER_VELOCITY, BEFORE_BOOSTER_VELOCITY, BRAKE_FORCE, MAX_CURRENT_A, SIM_SPEED, State,
+};
 use iso8601_timestamp::Timestamp;
 use std::f32::consts::PI;
 use std::sync::Arc;
 use tokio::{
-    sync::Mutex,
-    time::{interval, Duration}
+    sync::{Mutex, broadcast},
+    time::{Duration, interval},
 };
+use serde::Serialize;
 
 // The tick duration is 0.25 seconds, so we multiply the SIM_SPEED by 0.25 to get the correct position update per tick
 const SIM_TICK_MS: f32 = SIM_SPEED * 0.25;
 
+// Type alias for a shared simulator instance wrapped in an Arc and Mutex for thread-safe access across async tasks
 pub type SharedSim = Arc<Mutex<Simulator>>;
+
+#[derive(Serialize, Clone)]
+pub struct SimSnapshot {
+    pub position_m: f32,
+    pub velocity_kmh: f32,
+    pub acceleration_ms2: f32,
+    pub voltage_v: f32,
+    pub current_a: f32,
+    pub mass_kg: f32,
+    pub state: String,
+    pub timestamp: String,
+}
+
+// The Simulator struct holds all the parameters and state of the simulation, and contains methods to update its state based on the current conditions
 pub struct Simulator {
     position_m: f32,
     velocity_kmh: f32,
@@ -37,13 +54,13 @@ impl Simulator {
         }
     }
 
-    pub async fn run(sim: SharedSim) {
+    pub async fn run(sim: SharedSim, broadcast: broadcast::Sender<SimSnapshot>) {
         let mut tick = interval(Duration::from_millis(250));
         loop {
             tick.tick().await;
 
             let mut s = sim.lock().await;
-            
+
             // Simulator logic based on the current state
             s.update_timestamp();
             match s.state {
@@ -53,7 +70,25 @@ impl Simulator {
                 State::Braking => s.braking(),
                 _ => (),
             }
-            s.log();
+            // TEMPORAL LOGGING
+            // s.log();
+
+            // Sends via ws the current data of the simulator
+            broadcast.send(s.snapshot()).ok();
+        }
+    }
+
+    // Creates a snapshot of the current simulator state to be sent to the clients via WebSocket
+    pub fn snapshot(&self) -> SimSnapshot {
+        SimSnapshot {
+            position_m: self.position_m,
+            velocity_kmh: self.velocity_kmh,
+            acceleration_ms2: self.acceleration_ms2,
+            voltage_v: self.voltage_v,
+            current_a: self.current_a,
+            mass_kg: self.mass_kg,
+            state: format!("{:?}", self.state),
+            timestamp: self.timestamp.to_string(),
         }
     }
 
@@ -62,12 +97,19 @@ impl Simulator {
     }
 
     // Logs the current state and parameters of the simulator (just temporally for debugging purposes)
-    fn log(&self) {
-        println!(
-            "Timestamp: {}, State: {:?}, Position: {:.2} m, Velocity: {:.2} km/h, Acceleration: {:.2} m/s², Voltage: {:.2} V, Current: {:.2} A",
-            self.timestamp, &self.state, self.position_m, self.velocity_kmh, self.acceleration_ms2, self.voltage_v, self.current_a
-        );
-    }
+    // fn log(&self) {
+    //     println!(
+    //         "Timestamp: {}, State: {:?}, Position: {:.2} m, Velocity: {:.2} km/h, Acceleration: {:.2} m/s², Voltage: {:.2} V, Current: {:.2} A",
+    //         self.timestamp,
+    //         &self.state,
+    //         self.position_m,
+    //         self.velocity_kmh,
+    //         self.acceleration_ms2,
+    //         self.mass_kg,
+    //         self.voltage_v,
+    //         self.current_a
+    //     );
+    // }
 
     // Resets all the simulator parameters to their initial values
     pub fn reset(&mut self) {
@@ -75,6 +117,7 @@ impl Simulator {
         self.velocity_kmh = 0.0;
         self.acceleration_ms2 = 0.0;
         self.voltage_v = 0.0;
+        self.mass_kg = 0.0;
         self.current_a = 0.0;
         self.state = State::Idle;
         self.timestamp = Timestamp::now_utc();
@@ -123,9 +166,8 @@ impl Simulator {
             let vel_f_ms = AFTER_BOOSTER_VELOCITY / 3.6;
             let vel_o_ms = self.velocity_kmh / 3.6;
 
-            self.acceleration_ms2 = (vel_f_ms.powf(2.0)
-                - vel_o_ms.powf(2.0))
-                / (2.0 * (4.0 - self.position_m));
+            self.acceleration_ms2 =
+                (vel_f_ms.powf(2.0) - vel_o_ms.powf(2.0)) / (2.0 * (4.0 - self.position_m));
 
             let acceleration_kmh2 = self.acceleration_ms2 * 3.6;
             self.velocity_kmh += acceleration_kmh2 * SIM_TICK_MS;
@@ -147,7 +189,7 @@ impl Simulator {
             self.acceleration_ms2 = 0.0;
             self.state = State::Stopped;
         }
-        
+
         if self.position_m >= 50.0 {
             self.position_m = 50.0;
             self.velocity_kmh = 0.0;
@@ -197,4 +239,3 @@ impl Simulator {
         self.mass_kg
     }
 }
-

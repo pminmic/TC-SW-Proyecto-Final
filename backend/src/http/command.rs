@@ -3,8 +3,8 @@ use axum::{
     extract::State
 };
 use crate::config::State as SimState;
-use crate::physics::simulator::SharedSim;
 use serde::Deserialize;
+use crate::config::AppState;
 
 #[derive(Deserialize, Debug)]
 pub struct PrechargePayload {
@@ -22,9 +22,9 @@ pub enum Command {
     Reset
 }
 
-pub async fn command(State(sim): State<SharedSim>, Json(cmd): Json<Command>) {
+pub async fn command(State(sim): State<AppState>, Json(cmd): Json<Command>) {
 
-    let mut s = sim.lock().await;
+    let mut s = sim.sim.lock().await;
     match cmd {
         Command::Precharge => {
             if s.get_state().eq(&SimState::Idle) {

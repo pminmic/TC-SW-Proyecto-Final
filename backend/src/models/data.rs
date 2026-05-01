@@ -1,9 +1,8 @@
-use backend::config::State;
-use backend::physics::simulator::Simulator;
-use iso8601_timestamp::Timestamp;
+use serde::Serialize;
+use crate::physics::simulator::SimSnapshot;
 
-
-pub struct Data {
-    topic: String,
-    payload: Simulator
+#[derive(Serialize)]
+pub struct WsData {
+    pub topic: String,
+    pub payload: SimSnapshot,
 }
