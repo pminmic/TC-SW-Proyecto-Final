@@ -273,7 +273,7 @@ impl Simulator {
         None
     }
 
-    // We borrow the state to avoid unnecessary cloning, since State is a simple enum
+    // Return a reference to avoid unnecessary cloning.
     pub fn get_state(&self) -> &State {
         &self.state
     }
