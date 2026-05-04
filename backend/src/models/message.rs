@@ -1,9 +1,14 @@
-struct MessagePayload {
-    r#type: String,
-    content: String
+use serde::Serialize;
+
+#[derive(Serialize, Clone, Debug)]
+pub struct WsMessage {
+    pub topic: String,
+    pub payload: MessageContent,
 }
 
-pub struct Message {
-    topic: String,
-    payload: MessagePayload
+#[derive(Serialize, Clone, Debug)]
+pub struct MessageContent {
+    #[serde(rename = "type")]
+    pub r#type: String,
+    pub content: String,
 }

@@ -1,3 +1,4 @@
+use crate::models::message::WsMessage;
 use crate::physics::simulator::{SharedSim, SimSnapshot};
 use tokio::sync::broadcast;
 
@@ -22,5 +23,6 @@ pub enum State {
 #[derive(Clone)]
 pub struct AppState {
     pub sim: SharedSim,
-    pub broadcast: broadcast::Sender<SimSnapshot>,
+    pub data: broadcast::Sender<SimSnapshot>,
+    pub message: broadcast::Sender<WsMessage>,
 }

@@ -1,12 +1,15 @@
 use axum::{
     Router,
-    routing::{get, post},
     http::HeaderValue,
+    routing::{get, post},
 };
-use backend::config::AppState;
-use backend::http;
-use backend::physics::simulator::{SharedSim, SimSnapshot, Simulator};
-use backend::websocket;
+use backend::{
+    config::AppState,
+    http,
+    models::message::WsMessage,
+    physics::simulator::{SharedSim, SimSnapshot, Simulator},
+    websocket,
+};
 use std::sync::Arc;
 use tokio::sync::{Mutex, broadcast};
 use tower_http::cors::{Any, CorsLayer};
@@ -20,17 +23,18 @@ async fn main() {
         .allow_headers(Any);
 
     let cors_ws = CorsLayer::new()
-    .allow_origin("http://localhost:5173".parse::<HeaderValue>().unwrap())
-    .allow_methods(Any)
-    .allow_headers(Any);
+        .allow_origin("http://localhost:5173".parse::<HeaderValue>().unwrap())
+        .allow_methods(Any)
+        .allow_headers(Any);
 
-    let (broadcast, _) = broadcast::channel::<SimSnapshot>(16);
+    let (data, _) = broadcast::channel::<SimSnapshot>(16);
+    let (message, _) = broadcast::channel::<WsMessage>(16);
 
     let sim: SharedSim = Arc::new(Mutex::new(Simulator::new()));
     let sim_for_loop = Arc::clone(&sim);
-    tokio::spawn(Simulator::run(sim_for_loop, broadcast.clone()));
+    tokio::spawn(Simulator::run(sim_for_loop, data.clone(), message.clone()));
 
-    let state = AppState { sim, broadcast };
+    let state = AppState { sim, data, message };
 
     // Build the app endpoint routes
     let app_http = Router::new()
@@ -38,7 +42,7 @@ async fn main() {
         .route("/api/command", post(http::command::command))
         .with_state(state.clone())
         .layer(cors_http.clone());
-    
+
     let app_ws = Router::new()
         .route("/backend/stream", get(websocket::broadcaster::ws_handler))
         .with_state(state)

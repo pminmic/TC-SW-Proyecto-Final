@@ -1,14 +1,15 @@
 use crate::config::{
     AFTER_BOOSTER_VELOCITY, BEFORE_BOOSTER_VELOCITY, BRAKE_FORCE, MAX_CURRENT_A, SIM_SPEED, State,
 };
+use crate::models::message::{MessageContent, WsMessage};
 use iso8601_timestamp::Timestamp;
+use serde::Serialize;
 use std::f32::consts::PI;
 use std::sync::Arc;
 use tokio::{
     sync::{Mutex, broadcast},
     time::{Duration, interval},
 };
-use serde::Serialize;
 
 // The tick duration is 0.25 seconds, so we multiply the SIM_SPEED by 0.25 to get the correct position update per tick
 const SIM_TICK_MS: f32 = SIM_SPEED * 0.25;
@@ -54,7 +55,11 @@ impl Simulator {
         }
     }
 
-    pub async fn run(sim: SharedSim, broadcast: broadcast::Sender<SimSnapshot>) {
+    pub async fn run(
+        sim: SharedSim,
+        data: broadcast::Sender<SimSnapshot>,
+        message: broadcast::Sender<WsMessage>,
+    ) {
         let mut tick = interval(Duration::from_millis(250));
         loop {
             tick.tick().await;
@@ -63,18 +68,34 @@ impl Simulator {
 
             // Simulator logic based on the current state
             s.update_timestamp();
+
+
+            let mut msg: Option<MessageContent> = None;
+
             match s.state {
-                State::Precharge => s.precharge(),
-                State::Running => s.running(),
-                State::Boosting => s.boosting(),
-                State::Braking => s.braking(),
-                _ => (),
+                State::Precharge => msg = s.precharge(),
+                State::Running => msg = s.running(),
+                State::Boosting => msg = s.boosting(),
+                State::Braking => msg = s.braking(),
+                _ => msg = None,
             }
+            
             // TEMPORAL LOGGING
             // s.log();
 
             // Sends via ws the current data of the simulator
-            broadcast.send(s.snapshot()).ok();
+            data.send(s.snapshot()).ok();
+
+            // If there's an info message to be sent to the clients, we send it via WebSocket
+            if let Some(m) = msg {
+                let info: WsMessage = WsMessage {
+                    topic: "message".to_string(),
+                    payload: m,
+                };
+
+                message.send(info).ok();
+                println!("Message sent");
+            }
         }
     }
 
@@ -111,8 +132,50 @@ impl Simulator {
     //     );
     // }
 
+    pub fn inform(&self) -> Option<MessageContent> {
+        let (t, cont) = match self.state {
+            // Reset
+            State::Idle => ("info".to_string(), "System reset".to_string()),
+            State::Precharge => ("info".to_string(), "Prechange started".to_string()),
+            State::Ready => (
+                "success".to_string(),
+                "V = 400V precharge completed successfully".to_string(),
+            ),
+            State::Running => {
+                if self.position_m < 2.0 {
+                    (
+                        "info".to_string(),
+                        format!("Booster test started. Mass: {} kg", self.mass_kg),
+                    )
+                } else if self.position_m >= 4.0 {
+                    (
+                        "success".to_string(),
+                        "Boost completed. Velocity: 25km/h".to_string(),
+                    )
+                } else {
+                    return None;
+                }
+            }
+            State::Boosting => ("info".to_string(), "Booster section entered".to_string()),
+            State::Braking => ("info".to_string(), "Braking initiated".to_string()),
+            State::Crashed => (
+                "critical".to_string(),
+                "Cart reached mechanical stopper at s = 50 m".to_string(),
+            ),
+            State::Stopped => (
+                "success".to_string(),
+                format!("Cart stopped at s =  {:.2} m", self.position_m),
+            ),
+        };
+
+        Some(MessageContent {
+            r#type: t,
+            content: cont,
+        })
+    }
+
     // Resets all the simulator parameters to their initial values
-    pub fn reset(&mut self) {
+    pub fn reset(&mut self) -> Option<MessageContent> {
         self.position_m = 0.0;
         self.velocity_kmh = 0.0;
         self.acceleration_ms2 = 0.0;
@@ -121,21 +184,26 @@ impl Simulator {
         self.current_a = 0.0;
         self.state = State::Idle;
         self.timestamp = Timestamp::now_utc();
+
+        // Return info message
+        self.inform()
     }
 
     // Will be called every tick when the state is Precharge
-    fn precharge(&mut self) {
+    fn precharge(&mut self) -> Option<MessageContent> {
         if self.voltage_v == 400.0 {
             self.state = State::Ready;
-        }
 
-        if self.state.eq(&State::Precharge) {
+            // Info message to be sent to the clients via WebSocket when precharge is completed
+            return self.inform();
+        } else if self.state.eq(&State::Precharge) {
             self.voltage_v += 25.0 * SIM_SPEED; // Increase per tick
         }
+        None
     }
 
     // Will be called every tick when the state is Running
-    fn running(&mut self) {
+    fn running(&mut self) -> Option<MessageContent> {
         if self.position_m < 2.0 {
             self.velocity_kmh = BEFORE_BOOSTER_VELOCITY;
             self.acceleration_ms2 = 0.0;
@@ -144,6 +212,7 @@ impl Simulator {
             self.position_m += (self.velocity_kmh / 3.6) * SIM_TICK_MS;
         } else if self.position_m >= 2.0 && self.position_m < 4.0 {
             self.set_state(State::Boosting);
+            return self.inform();
         } else if self.position_m >= 4.0 {
             self.velocity_kmh = AFTER_BOOSTER_VELOCITY;
             self.acceleration_ms2 = 0.0;
@@ -158,10 +227,12 @@ impl Simulator {
             self.velocity_kmh = 0.0;
             self.acceleration_ms2 = 0.0;
             self.state = State::Crashed;
+            return self.inform();
         }
+        None
     }
 
-    fn boosting(&mut self) {
+    fn boosting(&mut self) -> Option<MessageContent> {
         if self.position_m >= 2.0 && self.position_m < 4.0 {
             let vel_f_ms = AFTER_BOOSTER_VELOCITY / 3.6;
             let vel_o_ms = self.velocity_kmh / 3.6;
@@ -177,10 +248,12 @@ impl Simulator {
             self.current_a = MAX_CURRENT_A * ((PI * (self.position_m - 2.0) / 2.0).sin() as f32);
         } else {
             self.set_state(State::Running);
+            return self.inform();
         }
+        None
     }
 
-    fn braking(&mut self) {
+    fn braking(&mut self) -> Option<MessageContent> {
         self.acceleration_ms2 = -BRAKE_FORCE / self.mass_kg;
         self.velocity_kmh += (self.acceleration_ms2 * 3.6) * SIM_TICK_MS;
         self.position_m += (self.velocity_kmh / 3.6) * SIM_TICK_MS;
@@ -188,6 +261,7 @@ impl Simulator {
             self.velocity_kmh = 0.0;
             self.acceleration_ms2 = 0.0;
             self.state = State::Stopped;
+            return self.inform();
         }
 
         if self.position_m >= 50.0 {
@@ -195,7 +269,9 @@ impl Simulator {
             self.velocity_kmh = 0.0;
             self.acceleration_ms2 = 0.0;
             self.state = State::Crashed;
+            return self.inform();
         }
+        None
     }
 
     // We borrow the state to avoid unnecessary cloning, since State is a simple enum

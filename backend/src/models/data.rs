@@ -1,5 +1,5 @@
-use serde::Serialize;
 use crate::physics::simulator::SimSnapshot;
+use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct WsData {
