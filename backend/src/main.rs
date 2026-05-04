@@ -16,6 +16,8 @@ use tower_http::cors::{Any, CorsLayer};
 
 #[tokio::main]
 async fn main() {
+
+    println!("\n\nBackend inicialiced:\n- HTTP server on port 8001\n- WebSocket server on port 5001\n\nTo end the server, press Ctrl+C");
     // Set up CORS to allow requests from any origin
     let cors_http = CorsLayer::new()
         .allow_origin(Any)

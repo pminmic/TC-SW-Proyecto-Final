@@ -30,10 +30,8 @@ pub async fn command(State(sim): State<AppState>, Json(cmd): Json<Command>) {
 
                 if s.get_state().eq(&SimState::Idle) {
                     s.set_state(SimState::Precharge);
-                    println!("Se ha pulsado PRECHARGE");
                     s.inform()
                 } else {
-                    println!("Error: PRECHARGE solo se puede pulsar desde el estado IDLE");
                     Some(MessageContent {
                         r#type: "error".to_string(),
                         content: "Command PRECHARGE only allowed in IDLE state".to_string(),
@@ -57,10 +55,8 @@ pub async fn command(State(sim): State<AppState>, Json(cmd): Json<Command>) {
                     s.set_mass(payload.mass);
                     s.set_state(SimState::Running);
 
-                    println!("Se ha pulsado START con payload: {:?}", payload.mass);
                     s.inform()
                 } else {
-                    println!("Error: START solo se puede pulsar desde el estado READY");
                     Some(
                         MessageContent {
                             r#type: "error".to_string(),
@@ -84,12 +80,8 @@ pub async fn command(State(sim): State<AppState>, Json(cmd): Json<Command>) {
                 let mut s = sim.sim.lock().await;
                 if s.get_state().eq(&SimState::Running) || s.get_state().eq(&SimState::Boosting) {
                     s.set_state(SimState::Braking);
-                    println!("Se ha pulsado BRAKE");
                     s.inform()
                 } else {
-                    println!(
-                        "Error: BRAKE solo se puede pulsar desde los estados RUNNING o BOOSTING"
-                    );
                     Some(MessageContent {
                         r#type: "error".to_string(),
                         content: "Command BRAKE only allowed in RUNNING or BOOSTING state".to_string(),
@@ -120,8 +112,6 @@ pub async fn command(State(sim): State<AppState>, Json(cmd): Json<Command>) {
                     })
                     .ok();
             }
-
-            println!("Se ha pulsado RESET");
         }
     }
 }

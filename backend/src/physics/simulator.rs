@@ -94,7 +94,6 @@ impl Simulator {
                 };
 
                 message.send(info).ok();
-                println!("Message sent");
             }
         }
     }
