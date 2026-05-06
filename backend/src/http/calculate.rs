@@ -1,9 +1,9 @@
-use crate::config::{BRAKE_FORCE, BEFORE_BOOSTER_VELOCITY};
+use crate::config::{BRAKE_FORCE, AFTER_BOOSTER_VELOCITY};
 use axum::{Json, extract::Query, http::StatusCode};
 use serde::{Deserialize, Serialize};
 
 // Convert initial velocity from km/h to m/s
-const I_VEL_MS: f32 = BEFORE_BOOSTER_VELOCITY / 3.6;
+const I_VEL_MS: f32 = AFTER_BOOSTER_VELOCITY / 3.6;
 
 #[derive(Deserialize)]
 pub struct CalculateParameters {
