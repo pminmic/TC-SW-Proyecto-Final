@@ -23,3 +23,5 @@ export type ProgressInfo = {
     position_m: number,
     state: string,
 }
+
+export type MessageType = [string, string] // [type, content]

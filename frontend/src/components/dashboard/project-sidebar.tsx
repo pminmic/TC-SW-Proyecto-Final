@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/sidebar"
 import { IconChevronDown } from "@tabler/icons-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import VariableCheckbox from "./variable-checkbox"
+import VariableCheckbox from "../shared/variable-checkbox"
 import { Separator } from "@/components/ui/separator"
-import DistanceCalculator from "./distance-calculator"
-import CustomSidebarTrigger from "./custom-sidebar-trigger"
+import DistanceCalculator from "../shared/distance-calculator"
+import CustomSidebarTrigger from "../shared/custom-sidebar-trigger"
 import type { ProjectSidebarProps } from "@/types/props"
 
 const ProjectSidebar = ({ handleChangeLayout, numLayout, handleChangeVariableSelected, variableSelected }: ProjectSidebarProps) => {

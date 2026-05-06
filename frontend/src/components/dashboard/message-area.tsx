@@ -1,4 +1,4 @@
-import MessageContent from "./message-content"
+import MessageContent from "../shared/message-content"
 import type { MessageAreaProps } from "@/types/props"
 
 
@@ -15,8 +15,8 @@ const MessageArea = ({ messages }: MessageAreaProps) => {
                 <MessageContent key={idx} type={type} content={content} />
             ))}
         </div>
-    
-)
+
+    )
 }
 
 export default MessageArea

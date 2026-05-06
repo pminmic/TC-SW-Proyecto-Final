@@ -1,76 +1,27 @@
-import { useState, useEffect } from "react"
+import { useState, useMemo } from "react"
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import ButtonArea from "./button-area"
-import ChartsArea from "./charts-area"
+import ButtonArea from "@/components/dashboard/button-area"
+import ChartsArea from "@/components/dashboard/charts-area"
 import MessageArea from "./message-area"
 import ModelArea from "./model-area"
 import { toast } from "sonner"
-import HeaderData from "./header-data"
-import type { PayloadType } from "@/types/types"
+import HeaderData from "../shared/header-data"
 import type { ProjectLayoutProps } from "@/types/props"
+import { useSimulator } from "@/hooks/use-simulator"
 
 
 const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
 
-
-
   const [wValue, setWValue] = useState([90])
   const [isWeigthSet, setIsWeightSet] = useState(false)
-  const [payload, setPayload] = useState<PayloadType[]>([])
-  const [messages, setMessages] = useState<[string, string][]>([])
+  const { payload, messages } = useSimulator()
 
-  useEffect(() => {
-    const socket = new WebSocket("ws://localhost:5001/backend/stream")
-
-    socket.onmessage = (event: MessageEvent) => {
-      try {
-        const jsonData = JSON.parse(event.data)
-
-        if (jsonData.topic === "data") {
-          setPayload(prev => {
-            const payload = jsonData.payload as PayloadType
-            const next = [...prev, payload]
-            if (next.length > 20) next.shift()
-            return next
-          })
-        }
-        if (jsonData.topic === "message") {
-          console.log("Message received:", jsonData.payload)
-          setMessages(prev => [[jsonData.payload.type, jsonData.payload.content], ...prev])
-          
-          if (jsonData.payload.type === "error") {
-            console.log("Showing error toast:", jsonData.payload.content)
-            toast.error("Error", { description: jsonData.payload.content })
-          }
-          else if (jsonData.payload.type === "success") {
-            console.log("Showing success toast:", jsonData.payload.content)
-            toast.success("Success", { description: jsonData.payload.content })
-          }
-          else if (jsonData.payload.type === "info") {
-            console.log("Showing info toast:", jsonData.payload.content)
-            toast.info("Info", { description: jsonData.payload.content })
-          }
-          else if (jsonData.payload.type === "critical") {
-            console.log("Showing warning toast:", jsonData.payload.content)
-            toast.warning("Critical", { description: jsonData.payload.content })
-          }
-        
-        }
-      }
-      catch (e: any) {
-        console.error(`Error al parsear: ${e}`)
-      }
-    }
-
-    return () => {
-      socket.close()
-    }
-  }, [])
+  const lastData = payload.length > 0 ? payload[payload.length - 1] : null
 
   const handleSetWeight = () => {
     setIsWeightSet(true)
@@ -94,46 +45,54 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
     }
     catch (error) {
       toast.error("Error resetting", { description: String(error) })
-    }  
+    }
 
     setIsWeightSet(false)
   }
 
-  const headerData = payload.length > 0 ? payload[payload.length - 1] : null
+  // Optimize excesive rerenderings
+  const messageArea = useMemo(() => <MessageArea messages={messages} />, [messages])
+  const modelArea = useMemo(() => <ModelArea payload={lastData} />, [payload])
+  const buttonArea = useMemo(() => {
+    return <ButtonArea
+      wValue={wValue}
+      setWValue={setWValue}
+      isWeightSet={isWeigthSet}
+      handleSetWeight={handleSetWeight}
+      handleReset={handleReset} />
+  }, [wValue, isWeigthSet])
+  const chartArea = useMemo(() => {
+    return <ChartsArea
+      variableSelected={variableSelected}
+      payload={payload}
+    />
+  }, [payload, variableSelected])
+  const headerData = useMemo(() => <HeaderData payload={lastData} />, [lastData])
 
   if (numLayout === 1) {
     return (
       <Card className="w-full min-h-11/12 m-5">
         <CardHeader>
-          <HeaderData payload={headerData} />
+          {headerData}
         </CardHeader>
         <CardContent className="h-full">
           <ResizablePanelGroup orientation="vertical" className="h-full">
             <ResizablePanel defaultSize="65%">
-              <ChartsArea
-                variableSelected={variableSelected}
-                payload={payload}
-              />
+              {chartArea}
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize="35%" minSize="25%">
               <ResizablePanelGroup orientation="horizontal" className="h-full">
                 <ResizablePanel defaultSize="25%">
-                  <MessageArea messages={messages} />
+                  {messageArea}
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize="50%">
-                  <ModelArea payload={payload[payload.length - 1]} />
+                  {modelArea}
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize="25%" minSize="25%">
-                  <ButtonArea
-                    wValue={wValue}
-                    setWValue={setWValue}
-                    isWeightSet={isWeigthSet}
-                    handleSetWeight={handleSetWeight}
-                    handleReset={handleReset}
-                  />
+                  {buttonArea}
                 </ResizablePanel>
               </ResizablePanelGroup>
             </ResizablePanel>
@@ -146,21 +105,18 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
     return (
       <Card className="w-full min-h-11/12 m-5">
         <CardHeader>
-          <HeaderData payload={headerData} />
+          {headerData}
         </CardHeader>
         <CardContent className="h-full">
           <ResizablePanelGroup orientation="horizontal" className="h-full">
             <ResizablePanel defaultSize="75%">
               <ResizablePanelGroup orientation="vertical" className="h-full">
                 <ResizablePanel defaultSize="50%">
-                  <ChartsArea
-                    variableSelected={variableSelected}
-                    payload={payload}
-                  />
+                  {chartArea}
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize="50%">
-                  <ModelArea payload={payload[payload.length - 1]} />
+                  {modelArea}
                 </ResizablePanel>
               </ResizablePanelGroup>
             </ResizablePanel>
@@ -168,17 +124,11 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
             <ResizablePanel defaultSize="25%" minSize="25%" maxSize="60%">
               <ResizablePanelGroup orientation="vertical" className="h-full">
                 <ResizablePanel defaultSize="65%">
-                  <MessageArea messages={messages} />
+                  {messageArea}
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize="35%" minSize="25%">
-                  <ButtonArea
-                    wValue={wValue}
-                    setWValue={setWValue}
-                    isWeightSet={isWeigthSet}
-                    handleSetWeight={handleSetWeight}
-                    handleReset={handleReset}
-                  />
+                  {buttonArea}
                 </ResizablePanel>
               </ResizablePanelGroup>
             </ResizablePanel>

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { toast } from "sonner"
-import WeightInput from "./weight-input"
+import WeightInput from "@/components/shared/weight-input"
 import type { ButtonAreaProps } from "@/types/props"
 
 const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleReset }: ButtonAreaProps) => {
@@ -81,7 +81,7 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
                 <ButtonGroup>
                     <Button
                         disabled={!isWeightSet}
-                        className="p-5 w-20 text-amber-700 hover:bg-amber-400 bg-amber-500"
+                        className="p-5 w-20 text-amber-300 hover:bg-amber-400/70 bg-amber-500/60"
                         onClick={handlePrecharge}
                     >
                         PRECHARGE
@@ -90,7 +90,7 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
                 <ButtonGroup>
                     <Button
                         disabled={!isWeightSet}
-                        className="p-5 w-20 bg-green-800 hover:bg-green-700 text-green-300 "
+                        className="p-5 w-20 bg-green-800/60 hover:bg-green-700/70 text-green-300 "
                         size="lg"
                         onClick={handleStart}
                     >

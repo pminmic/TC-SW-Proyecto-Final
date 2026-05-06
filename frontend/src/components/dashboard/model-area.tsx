@@ -1,8 +1,12 @@
-import ProgressSegments from "./progress-segments"
+import ProgressSegments from "@/components/shared/progress-segments"
 import type { ProgressInfo } from "@/types/types"
 import type { ModelAreaProps } from "@/types/props"
 
 const ModelArea = ( { payload }: ModelAreaProps) => {
+
+    if (payload === null) {
+        return <></>
+    }
 
     const progressInfo: ProgressInfo = {
         position_m: payload?.position_m,

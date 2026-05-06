@@ -1,6 +1,6 @@
 import { useState } from "react";
-import ProjectSidebar from "./components/shared/project-sidebar"
-import ProjectLayout from "./components/shared/project-layout"
+import ProjectSidebar from "@/components/dashboard/project-sidebar"
+import ProjectLayout from "@/components/dashboard/project-layout"
 import type { VariableSelected } from "./types/types";
 
 export function App() {

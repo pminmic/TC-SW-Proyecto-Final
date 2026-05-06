@@ -60,5 +60,5 @@ export type ProgressSegmentsProps = {
 }
 
 export type ModelAreaProps = {
-    payload: PayloadType
+    payload: PayloadType | null
 }
