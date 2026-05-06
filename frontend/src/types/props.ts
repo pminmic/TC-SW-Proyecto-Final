@@ -1,4 +1,5 @@
 import type { PayloadType, VariableSelected } from "./types"
+import type { ProgressInfo } from "./types"
 
 export type WeightInputProps = {
     wValue: number,
@@ -52,4 +53,12 @@ export type ProjectSidebarProps = {
     numLayout: number,
     handleChangeVariableSelected: (prev: VariableSelected) => void,
     variableSelected: VariableSelected
+}
+
+export type ProgressSegmentsProps = {
+    progressInfo: ProgressInfo
+}
+
+export type ModelAreaProps = {
+    payload: PayloadType
 }

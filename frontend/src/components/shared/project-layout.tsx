@@ -123,7 +123,7 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize="50%">
-                  <ModelArea />
+                  <ModelArea payload={payload[payload.length - 1]} />
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize="25%" minSize="25%">
@@ -160,7 +160,7 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize="50%">
-                  <ModelArea />
+                  <ModelArea payload={payload[payload.length - 1]} />
                 </ResizablePanel>
               </ResizablePanelGroup>
             </ResizablePanel>

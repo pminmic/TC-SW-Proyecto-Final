@@ -1,5 +1,5 @@
 import type { HeaderDataProps } from "@/types/props"
-
+import { IconSkull } from "@tabler/icons-react"
 
 const HeaderData = ({ payload }: HeaderDataProps) => {
 
@@ -12,27 +12,31 @@ const HeaderData = ({ payload }: HeaderDataProps) => {
     }
 
     let stateColor = null
+    const state = payload.state.toUpperCase();
 
-    if (payload.state === "IDLE") {
+    if (state === "IDLE") {
         stateColor = <div className="rounded-full bg-gray-500 w-2 h-2"></div>
     }
-    else if (payload.state === "PRECHARGE") {
+    else if (state === "PRECHARGE") {
         stateColor = <div className="rounded-full bg-yellow-500 w-2 h-2"></div>
     }
-    else if (payload.state === "READY") {
+    else if (state === "READY") {
         stateColor = <div className="rounded-full bg-green-500 w-2 h-2"></div>
     }
-    else if (payload.state === "RUNNING") {
+    else if (state === "RUNNING") {
         stateColor = <div className="rounded-full bg-blue-500 w-2 h-2"></div>
     }
-    else if (payload.state === "BOOSTING") {
+    else if (state === "BOOSTING") {
         stateColor = <div className="rounded-full bg-purple-500 w-2 h-2"></div>
     }
-    else if (payload.state === "BRAKING") {
+    else if (state === "BRAKING") {
         stateColor = <div className="rounded-full bg-orange-500 w-2 h-2"></div>
     }
-    else if (payload.state === "STOPPED") {
+    else if (state === "STOPPED") {
         stateColor = <div className="rounded-full bg-red-500 w-2 h-2"></div>
+    }
+    else if (state === "CRASHED") {
+        stateColor = <IconSkull className="text-slate-600" />
     }
 
     return (
@@ -40,7 +44,7 @@ const HeaderData = ({ payload }: HeaderDataProps) => {
             <span className="flex items-center gap-1">
                 <span className="font-bold">State:</span>
                 <span>{stateColor}</span>
-                <span>{payload.state}</span>
+                <span>{state}</span>
             </span>
             <span>
                 <span className="font-bold">Position:</span> {payload.position_m.toFixed(2)} m
