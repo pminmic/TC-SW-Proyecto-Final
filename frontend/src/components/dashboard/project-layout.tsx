@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react"
+import { useState} from "react"
 import {
   ResizableHandle,
   ResizablePanel,
@@ -9,10 +9,10 @@ import ButtonArea from "@/components/dashboard/button-area"
 import ChartsArea from "@/components/dashboard/charts-area"
 import MessageArea from "./message-area"
 import ModelArea from "./model-area"
-import { toast } from "sonner"
 import HeaderData from "../shared/header-data"
 import type { ProjectLayoutProps } from "@/types/props"
 import { useSimulator } from "@/hooks/use-simulator"
+import { useCommand } from "@/hooks/use-command"
 
 
 const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
@@ -28,46 +28,24 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
   }
 
   const handleReset = async () => {
-
-    try {
-      const response = await fetch("http://localhost:8001/api/command", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ "command": "RESET" })
-      })
-
-      if (!response.ok) {
-        const errorText = await response.text()
-        toast.error("Error resetting", { description: errorText })
-      }
-    }
-    catch (error) {
-      toast.error("Error resetting", { description: String(error) })
-    }
-
+    useCommand("reset")
     setIsWeightSet(false)
   }
 
   // Optimize excesive rerenderings
-  const messageArea = useMemo(() => <MessageArea messages={messages} />, [messages])
-  const modelArea = useMemo(() => <ModelArea payload={lastData} />, [payload])
-  const buttonArea = useMemo(() => {
-    return <ButtonArea
+  const messageArea = <MessageArea messages={messages} />
+  const modelArea = <ModelArea payload={lastData} />
+  const buttonArea = <ButtonArea
       wValue={wValue}
       setWValue={setWValue}
       isWeightSet={isWeigthSet}
       handleSetWeight={handleSetWeight}
       handleReset={handleReset} />
-  }, [wValue, isWeigthSet])
-  const chartArea = useMemo(() => {
-    return <ChartsArea
+  const chartArea = <ChartsArea
       variableSelected={variableSelected}
       payload={payload}
     />
-  }, [payload, variableSelected])
-  const headerData = useMemo(() => <HeaderData payload={lastData} />, [lastData])
+  const headerData = <HeaderData payload={lastData} />
 
   if (numLayout === 1) {
     return (

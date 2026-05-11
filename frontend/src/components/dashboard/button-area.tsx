@@ -1,78 +1,23 @@
 import { Button } from "@/components/ui/button"
 import { ButtonGroup } from "@/components/ui/button-group"
-import { toast } from "sonner"
 import WeightInput from "@/components/shared/weight-input"
 import type { ButtonAreaProps } from "@/types/props"
+import { useCommand } from "@/hooks/use-command"
 
 const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleReset }: ButtonAreaProps) => {
 
     const isInvalid = typeof wValue[0] === "string" && isNaN(parseFloat(wValue[0]))
 
-    const handlePrecharge = async () => {
-        try {
-            const response = await fetch("http://localhost:8001/api/command", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    "command": "PRECHARGE"
-                })
-            })
-
-            if (!response.ok) {
-                const errorText = await response.text()
-                toast.error("Error precharging", { description: errorText })
-            }
-
-        } catch (error) {
-            toast.error("Error precharging", { description: String(error) })
-        }
+    const handlePrecharge = () => {
+        useCommand("precharge")
     }
 
     const handleStart = async () => {
-        try {
-            const response = await fetch("http://localhost:8001/api/command", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    "command": "START",
-                    "payload": {
-                        "mass": wValue[0]
-                    }
-                })
-            })
-
-            if (!response.ok) {
-                const errorText = await response.text()
-                toast.error("Error starting", { description: errorText })
-            }
-
-        } catch (error) {
-            toast.error("Error starting", {description: String(error)})
-        }
+        useCommand("start", wValue[0])
     }
 
     const handleBreak = async () => {
-        try {
-            const response = await fetch("http://localhost:8001/api/command", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ "command": "BRAKE" })
-            })
-
-            if (!response.ok) {
-                const errorText = await response.text()
-                toast.error("Error braking", { description: errorText })
-            }
-
-        } catch (error) {
-            toast.error("Error braking", { description: String(error) })
-        }
+        useCommand("brake")
     }
 
     return (
