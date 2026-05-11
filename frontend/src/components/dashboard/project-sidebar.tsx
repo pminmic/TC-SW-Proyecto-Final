@@ -30,11 +30,7 @@ const ProjectSidebar = ({ handleChangeLayout, numLayout, handleChangeVariableSel
                 </SidebarHeader>
                 <SidebarContent>
                     <VariableCheckbox
-                        voltageCheck={variableSelected.voltage}
-                        accelerationCheck={variableSelected.acceleration}
-                        velocityCheck={variableSelected.velocity}
-                        forceCheck={variableSelected.force}
-                        intensityCheck={variableSelected.intensity}
+                        vrbles={variableSelected}
                         handleChangeSelected={handleChangeVariableSelected}
                     />
                     <Separator />
@@ -52,13 +48,13 @@ const ProjectSidebar = ({ handleChangeLayout, numLayout, handleChangeVariableSel
                             <CollapsibleContent>
                                 <SidebarMenu>
                                     <SidebarMenuItem>
-                                        <SidebarMenuButton isActive={numLayout === 1} onClick={() => handleChangeLayout(1)}>
-                                            Layout 1
+                                        <SidebarMenuButton isActive={numLayout === "chart-view"} onClick={() => handleChangeLayout("chart-view")}>
+                                            Charts View
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
                                     <SidebarMenuItem>
-                                        <SidebarMenuButton isActive={numLayout === 2} onClick={() => handleChangeLayout(2)}>
-                                            Layout 2
+                                        <SidebarMenuButton isActive={numLayout === "model-view"} onClick={() => handleChangeLayout("model-view")}>
+                                            Model View
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
                                 </SidebarMenu>

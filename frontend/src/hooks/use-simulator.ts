@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import type { MessageType, PayloadType } from "@/types/types"
 import { toast } from "sonner"
+import { API_WS } from "@/lib/config"
 
 export function useSimulator() {
   const [payload, setPayload] = useState<PayloadType[]>([])
@@ -9,22 +10,44 @@ export function useSimulator() {
   // Avoid rerendering with every new WS
   const socketRef = useRef<WebSocket | null>(null)
 
+  // Buffer incoming payloads to batch state updates and avoid excessive rerenders
+  const bufferRef = useRef<PayloadType[]>([])
+  const timerRef = useRef<number | null>(null)
+  const FLUSH_INTERVAL_MS = 100 // flush every 100ms (10 Hz)
+
   useEffect(() => {
     // Evita doble conexión si ya existe (por StrictMode en dev)
     if (socketRef.current) return
 
-    const socket = new WebSocket("ws://localhost:5001/backend/stream")
+    const socket = new WebSocket(`${API_WS}/backend/stream`)
     socketRef.current = socket
+
+    // Flush buffer at a fixed interval to limit UI updates and CPU work
+    const flush = () => {
+      try {
+        const buf = bufferRef.current
+        if (buf.length > 0) {
+          setPayload(prev => {
+            let next = [...prev, ...buf]
+            bufferRef.current = []
+            if (next.length > 20) return next.slice(-20)
+            return next
+          })
+        }
+      } catch (e) {
+        console.error("Error flushing payload buffer:", e)
+      }
+    }
+
+    // Start periodic flush
+    timerRef.current = window.setInterval(flush, FLUSH_INTERVAL_MS)
 
     socket.onmessage = (event: MessageEvent) => {
       try {
         const jsonData = JSON.parse(event.data)
         if (jsonData.topic === "data") {
-          setPayload(prev => {
-            const next = [...prev, jsonData.payload as PayloadType]
-            if (next.length > 20) next.shift()
-            return next
-          })
+          // Buffer incoming payloads and let the RAF flush handle state updates
+          bufferRef.current.push(jsonData.payload as PayloadType)
         }
         if (jsonData.topic === "message") {
           const { type, content } = jsonData.payload
@@ -59,8 +82,19 @@ export function useSimulator() {
     socket.onerror = (e) => console.error("WebSocket error:", e)
 
     return () => {
-      socket.close()
-      socketRef.current = null
+      // Remove handlers and close socket safely
+      try {
+        socket.onmessage = null
+        socket.onerror = null
+        if (timerRef.current != null) clearInterval(timerRef.current)
+        timerRef.current = null
+        socketRef.current?.close()
+      } catch (e) {
+        console.error("Error closing WebSocket:", e)
+      } finally {
+        socketRef.current = null
+        bufferRef.current = []
+      }
     }
   }, [])
 

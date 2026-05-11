@@ -19,28 +19,23 @@ import type { VariableCheckboxProps } from "@/types/props"
 
 
 const variables = [
-    { id: "voltage",      label: "Voltage",      initial: "V" },
-    { id: "acceleration", label: "Acceleration",  initial: "A" },
-    { id: "velocity",     label: "Velocity",      initial: "v" },
-    { id: "force",        label: "Force",         initial: "F" },
-    { id: "intensity",    label: "Intensity",     initial: "I" },
+    { id: "voltage", label: "Voltage", initial: "V" },
+    { id: "acceleration", label: "Acceleration", initial: "A" },
+    { id: "velocity", label: "Velocity", initial: "v" },
+    { id: "force", label: "Force", initial: "F" },
+    { id: "intensity", label: "Intensity", initial: "I" },
 ]
 
 const VariableCheckbox = ({
-    voltageCheck,
-    accelerationCheck,
-    velocityCheck,
-    forceCheck,
-    intensityCheck,
-    handleChangeSelected
+    vrbles, handleChangeSelected
 }: VariableCheckboxProps) => {
 
     const checks: Record<string, boolean> = {
-        voltage:      voltageCheck,
-        acceleration: accelerationCheck,
-        velocity:     velocityCheck,
-        force:        forceCheck,
-        intensity:    intensityCheck,
+        voltage:      vrbles.voltage,
+        acceleration: vrbles.acceleration,
+        velocity:     vrbles.velocity,
+        force:        vrbles.force,
+        intensity:    vrbles.intensity,
     }
 
     const buildPayload = (changedKey: string) =>

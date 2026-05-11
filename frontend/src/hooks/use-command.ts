@@ -1,6 +1,6 @@
 import { toast } from "sonner"
-
-type useCommandTypes = "precharge" | "start" | "brake" | "reset"
+import type { useCommandTypes } from "../types/types"
+import { API_HTTP } from "@/lib/config"
 
 export const useCommand = async (type: useCommandTypes, mass: number = 0) => {
     try {
@@ -21,7 +21,7 @@ export const useCommand = async (type: useCommandTypes, mass: number = 0) => {
             })
         }
 
-        const response = await fetch("http://localhost:8001/api/command", {
+        const response = await fetch(`${API_HTTP}/api/command`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

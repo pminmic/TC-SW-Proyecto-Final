@@ -3,6 +3,7 @@ import { ButtonGroup } from "@/components/ui/button-group"
 import WeightInput from "@/components/shared/weight-input"
 import type { ButtonAreaProps } from "@/types/props"
 import { useCommand } from "@/hooks/use-command"
+import { memo } from "react"
 
 const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleReset }: ButtonAreaProps) => {
 
@@ -26,7 +27,7 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
                 <ButtonGroup>
                     <Button
                         disabled={!isWeightSet}
-                        className="p-5 w-20 text-amber-300 hover:bg-amber-400/70 bg-amber-500/60"
+                        className="p-5 w-20 text-white/50 hover:bg-amber-300/40 bg-amber-400/30"
                         onClick={handlePrecharge}
                     >
                         PRECHARGE
@@ -35,7 +36,7 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
                 <ButtonGroup>
                     <Button
                         disabled={!isWeightSet}
-                        className="p-5 w-20 bg-green-800/60 hover:bg-green-700/70 text-green-300 "
+                        className="p-5 w-20 bg-green-500/20 hover:bg-green-700/50 text-green-400 "
                         size="lg"
                         onClick={handleStart}
                     >
@@ -77,4 +78,4 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
     )
 }
 
-export default ButtonArea
+export default memo(ButtonArea)

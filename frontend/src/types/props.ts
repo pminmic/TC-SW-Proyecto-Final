@@ -1,5 +1,4 @@
-import type { PayloadType, VariableSelected } from "./types"
-import type { ProgressInfo } from "./types"
+import type { PayloadType, VariableSelected, ProgressInfo, LayoutType } from "./types"
 
 export type WeightInputProps = {
     wValue: number,
@@ -9,12 +8,9 @@ export type WeightInputProps = {
 }
 
 export type VariableCheckboxProps = {
-    voltageCheck: boolean,
-    accelerationCheck: boolean,
-    velocityCheck: boolean,
-    forceCheck: boolean,
-    intensityCheck: boolean,
+    vrbles: VariableSelected,
     handleChangeSelected: (args: any) => void
+
 }
 
 export type HeaderDataProps = {
@@ -22,8 +18,8 @@ export type HeaderDataProps = {
 }
 
 export type ProjectLayoutProps = {
-  numLayout: number,
-  variableSelected: VariableSelected
+    numLayout: LayoutType,
+    variableSelected: VariableSelected
 }
 
 export type ChartsAreaProps = {
@@ -49,8 +45,8 @@ export type ButtonAreaProps = {
 }
 
 export type ProjectSidebarProps = {
-    handleChangeLayout: (num: number) => void,
-    numLayout: number,
+    handleChangeLayout: (l: LayoutType) => void,
+    numLayout: LayoutType,
     handleChangeVariableSelected: (prev: VariableSelected) => void,
     variableSelected: VariableSelected
 }

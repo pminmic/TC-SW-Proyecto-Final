@@ -30,8 +30,8 @@ async fn main() {
         .allow_headers(Any);
 
     // high capacity to avoid lagging the simulator if the frontend is not consuming fast enough
-    let (data, _) = broadcast::channel::<SimSnapshot>(128);
-    let (message, _) = broadcast::channel::<WsMessage>(64);
+    let (data, _) = broadcast::channel::<SimSnapshot>(2);
+    let (message, _) = broadcast::channel::<WsMessage>(1);
 
     let sim: SharedSim = Arc::new(Mutex::new(Simulator::new()));
     let sim_for_loop = Arc::clone(&sim);

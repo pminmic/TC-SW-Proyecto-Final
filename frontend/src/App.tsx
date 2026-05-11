@@ -1,11 +1,11 @@
 import { useState } from "react";
 import ProjectSidebar from "@/components/dashboard/project-sidebar"
 import ProjectLayout from "@/components/dashboard/project-layout"
-import type { VariableSelected } from "./types/types";
+import type { VariableSelected, LayoutType } from "./types/types";
 
 export function App() {
 
-  const [numLayout, setNumLayout] = useState(1);
+  const [numLayout, setNumLayout] = useState<LayoutType>("chart-view");
   const [variableSelected, setVariableSelected] = useState<VariableSelected>({
     voltage: true,
     acceleration: false,
@@ -15,8 +15,8 @@ export function App() {
   })
 
 
-  const handleChangeLayout = (num: number) => {
-    setNumLayout(num)
+  const handleChangeLayout = (l: LayoutType) => {
+    setNumLayout(l)
   }
 
   return (

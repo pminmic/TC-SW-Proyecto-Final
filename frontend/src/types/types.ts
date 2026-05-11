@@ -25,3 +25,7 @@ export type ProgressInfo = {
 }
 
 export type MessageType = [string, string] // [type, content]
+
+export type useCommandTypes = "precharge" | "start" | "brake" | "reset"
+
+export type LayoutType = "chart-view" | "model-view"

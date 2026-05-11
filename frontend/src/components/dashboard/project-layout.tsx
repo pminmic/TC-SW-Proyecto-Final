@@ -47,7 +47,7 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
     />
   const headerData = <HeaderData payload={lastData} />
 
-  if (numLayout === 1) {
+  if (numLayout === "chart-view") {
     return (
       <Card className="w-full min-h-11/12 m-5">
         <CardHeader>

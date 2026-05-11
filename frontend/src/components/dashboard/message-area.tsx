@@ -1,5 +1,6 @@
 import MessageContent from "../shared/message-content"
 import type { MessageAreaProps } from "@/types/props"
+import {memo} from "react"
 
 
 const MessageArea = ({ messages }: MessageAreaProps) => {
@@ -19,4 +20,4 @@ const MessageArea = ({ messages }: MessageAreaProps) => {
     )
 }
 
-export default MessageArea
+export default memo(MessageArea)

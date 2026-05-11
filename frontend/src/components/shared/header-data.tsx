@@ -34,10 +34,10 @@ const HeaderData = ({ payload }: HeaderDataProps) => {
             stateColor = <div className="rounded-full bg-orange-500 w-2 h-2"></div>
             break
         case "Stopped":
-            stateColor = <div className="rounded-full bg-red-500 w-2 h-2"></div>
+            stateColor = <div className="rounded-full bg-orange-700 w-2 h-2"></div>
             break
         case "Crashed":
-            stateColor = <IconSkull className="text-slate-600" />
+            stateColor = <IconSkull className="text-red-500" />
             break
         default:
             stateColor = null

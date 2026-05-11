@@ -1,6 +1,6 @@
 import type { ProgressSegmentsProps } from "@/types/props"
 import type { ProgressInfo } from "@/types/types"
-import { useState, useEffect } from "react"
+import { useState, useEffect, memo } from "react"
 
 const ProgressSegments = ({ progressInfo }: ProgressSegmentsProps) => {
 
@@ -35,10 +35,10 @@ const ProgressSegments = ({ progressInfo }: ProgressSegmentsProps) => {
                 color = "bg-orange-500";
                 break;
             case "Stopped":
-                color = "bg-red-500";
+                color = "bg-orange-700";
                 break;
             case "Crashed":
-                color = "bg-black";
+                color = "bg-red-500";
                 break;
             default:
                 color = "bg-gray-500";
@@ -65,4 +65,4 @@ const ProgressSegments = ({ progressInfo }: ProgressSegmentsProps) => {
     )
 }
 
-export default ProgressSegments
+export default memo(ProgressSegments)

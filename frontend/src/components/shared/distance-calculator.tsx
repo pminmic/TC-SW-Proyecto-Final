@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import WeightInput from "./weight-input"
 import type { CalculatedDistance } from "@/types/types"
+import { API_HTTP } from "@/lib/config"
 
 const DistanceCalculator = () => {
 
@@ -20,7 +21,7 @@ const DistanceCalculator = () => {
 
         const getDistance = async () => {
 
-            const response = await fetch(`http://localhost:8001/api/calculate?m=${wValue[0]}&d=${50 - position[0]}`)
+            const response = await fetch(`${API_HTTP}/api/calculate?m=${wValue[0]}&d=${50 - position[0]}`)
 
             if (response.ok) {
                 const data = await response.json()

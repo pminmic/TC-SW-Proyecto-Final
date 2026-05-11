@@ -1,6 +1,7 @@
 import ProgressSegments from "@/components/shared/progress-segments"
 import type { ProgressInfo } from "@/types/types"
 import type { ModelAreaProps } from "@/types/props"
+import {memo} from "react"
 
 const ModelArea = ( { payload }: ModelAreaProps) => {
 
@@ -15,10 +16,10 @@ const ModelArea = ( { payload }: ModelAreaProps) => {
 
     return (
         <div className="flex flex-col h-full items-center justify-center p-6">
-            <span className="font-semibold">Modelo 3D</span>
+            {/* <span className="font-semibold">Modelo 3D</span> */}
             <ProgressSegments progressInfo={progressInfo} />
         </div>
     )
 }
 
-export default ModelArea
+export default memo(ModelArea)
