@@ -1,6 +1,6 @@
-import { IconCalculator, IconChevronDown } from "@tabler/icons-react"
+import { IconCalculator, IconChevronDown, IconInfoCircle } from "@tabler/icons-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { SidebarGroup, SidebarGroupLabel } from "@/components/ui/sidebar"
+import { SidebarGroup, SidebarGroupLabel, SidebarMenuItem } from "@/components/ui/sidebar"
 import { Field, FieldContent, FieldDescription, FieldGroup, FieldLabel, FieldTitle } from "../ui/field"
 import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input"
@@ -38,7 +38,7 @@ const DistanceCalculator = () => {
     }
 
     return (
-        <Collapsible defaultOpen className="group/collapsible group-data-[collapsible=icon]:hidden">
+        <Collapsible className="group/collapsible group-data-[collapsible=icon]:hidden">
             <SidebarGroup>
                 <SidebarGroupLabel asChild>
                     <CollapsibleTrigger>
@@ -91,10 +91,15 @@ const DistanceCalculator = () => {
                         </FieldGroup>
                     </form>
                     {result === null ? (
-                        <></>
+                        <SidebarMenuItem>
+                            <p className="mt-5 mx-3 text-xs rounded-sm p-2 bg-sidebar-accent flex align-middle">
+                                <IconInfoCircle className="inline mr-2 size-10" />
+                                <span>Enter the weight and position to calculate the stopping distance.</span>
+                            </p>
+                        </SidebarMenuItem>
                     ) : (
                         typeof result == "number" ? (
-                            <FieldLabel className="mt-5 p-2">
+                            <FieldLabel className="mt-5 p-2 mx-3">
                                 <Field orientation="horizontal">
                                     <FieldContent>
                                         <FieldTitle className="text-2xl">s = {result}</FieldTitle>
@@ -103,7 +108,7 @@ const DistanceCalculator = () => {
                                 </Field>
                             </FieldLabel>
                         ) : (
-                            <Field className="mx-auto mt-5 p-5 bg-red-300/15 rounded-sm">
+                            <Field className="mt-5 p-5 mx-3 bg-red-300/15 rounded-sm">
                                 <FieldDescription className="text-red-400">{result}</FieldDescription>
                             </Field>
                         )

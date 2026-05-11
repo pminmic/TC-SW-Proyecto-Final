@@ -14,16 +14,16 @@ import {
     FieldLabel
 } from "@/components/ui/field"
 import { Checkbox } from "@/components/ui/checkbox"
-import { IconChartColumn, IconChevronDown } from "@tabler/icons-react"
+import { IconChartColumn, IconChevronDown, IconInfoCircle } from "@tabler/icons-react"
 import type { VariableCheckboxProps } from "@/types/props"
 
 
 const variables = [
-    { id: "voltage", label: "Voltage", initial: "V" },
-    { id: "acceleration", label: "Acceleration", initial: "A" },
-    { id: "velocity", label: "Velocity", initial: "v" },
-    { id: "force", label: "Force", initial: "F" },
-    { id: "intensity", label: "Intensity", initial: "I" },
+    { id: "voltage", label: "Voltage (V)", initial: "V" },
+    { id: "acceleration", label: "Acceleration (a)", initial: "a" },
+    { id: "velocity", label: "Velocity (v)", initial: "v" },
+    { id: "force", label: "Force (F)", initial: "F" },
+    { id: "intensity", label: "Intensity (I)", initial: "I" },
 ]
 
 const VariableCheckbox = ({
@@ -31,11 +31,11 @@ const VariableCheckbox = ({
 }: VariableCheckboxProps) => {
 
     const checks: Record<string, boolean> = {
-        voltage:      vrbles.voltage,
+        voltage: vrbles.voltage,
         acceleration: vrbles.acceleration,
-        velocity:     vrbles.velocity,
-        force:        vrbles.force,
-        intensity:    vrbles.intensity,
+        velocity: vrbles.velocity,
+        force: vrbles.force,
+        intensity: vrbles.intensity,
     }
 
     const buildPayload = (changedKey: string) =>
@@ -44,7 +44,7 @@ const VariableCheckbox = ({
         )
 
     return (
-        <Collapsible defaultOpen className="group/collapsible">
+        <Collapsible className="group/collapsible group-data-[collapsible=icon]:hidden">
             <SidebarGroup>
 
                 {/* ── Trigger: siempre visible ── */}
@@ -62,8 +62,15 @@ const VariableCheckbox = ({
                 {/* ── Vista EXPANDIDA: checkboxes con texto completo ── */}
                 <CollapsibleContent className="py-2 px-4 group-data-[collapsible=icon]:hidden">
                     <SidebarMenu>
+                        <SidebarMenuItem>
+                            <p className="mb-2 text-xs rounded-sm p-2 bg-sidebar-accent flex align-middle">
+                                <IconInfoCircle className="inline mr-2 size-10" />
+                                <span>Toggle each variable below to show or hide it in the current display.</span>
+                            </p>
+                        </SidebarMenuItem>
                         {variables.map(v => (
                             <SidebarMenuItem key={v.id} className="mb-2">
+
                                 <Field orientation="horizontal">
                                     <Checkbox
                                         id={`${v.id}-checkbox`}
@@ -81,23 +88,6 @@ const VariableCheckbox = ({
                         ))}
                     </SidebarMenu>
                 </CollapsibleContent>
-
-                {/* ── Vista COLAPSADA: checkbox + inicial, sin CollapsibleContent ── */}
-                <div className="hidden group-data-[collapsible=icon]:flex flex-col items-center gap-2 py-2">
-                    {variables.map(v => (
-                        <div key={v.id} className="flex items-center gap-2">
-                            <Checkbox
-                                id={`${v.id}-checkbox-mini`}
-                                checked={checks[v.id]}
-                                onCheckedChange={() => handleChangeSelected(buildPayload(v.id))}
-                            />
-                            <span className="text-[10px] font-medium text-muted-foreground leading-none">
-                                {v.initial}
-                            </span>
-                        </div>
-                    ))}
-                </div>
-
             </SidebarGroup>
         </Collapsible>
     )
