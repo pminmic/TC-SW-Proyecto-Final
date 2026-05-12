@@ -19,8 +19,8 @@ const HeaderData = ({ payload }: HeaderDataProps) => {
         Running: { bg: "bg-blue-500/50", border: "border-blue-500", circle: "bg-blue-500" },
         Boosting: { bg: "bg-purple-500/50", border: "border-purple-500", circle: "bg-purple-500" },
         Braking: { bg: "bg-orange-500/50", border: "border-orange-500", circle: "bg-orange-500" },
-        Stopped: { bg: "bg-orange-700/50", border: "border-orange-700", circle: "bg-orange-700" },
-        Crashed: { bg: "bg-red-500/50", border: "border-red-500", circle: "bg-red-500" },
+        Stopped: { bg: "bg-orange-800/50", border: "border-orange-800", circle: "bg-orange-800" },
+        Crashed: { bg: "bg-red-600/50", border: "border-red-600", circle: "bg-red-600" },
     }
 
     const styles = stateStyles[payload.state] ?? { bg: "", border: "", circle: "" }
@@ -39,7 +39,7 @@ const HeaderData = ({ payload }: HeaderDataProps) => {
             <Card className="min-h-1/12 min-w-1/8  ">
                 <CardHeader>
                     <CardTitle className="text-lg text-center">
-                        <span className="font-bold">Velocity:</span> {payload.velocity_kmh.toFixed(2)} km/h
+                        <span className="font-bold">Vel.:</span> {payload.velocity_kmh.toFixed(2)} km/h
                     </CardTitle>
                 </CardHeader>
             </Card>

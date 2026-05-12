@@ -35,10 +35,10 @@ const ProgressSegments = ({ progressInfo }: ProgressSegmentsProps) => {
                 color = "bg-orange-500";
                 break;
             case "Stopped":
-                color = "bg-orange-700";
+                color = "bg-orange-800";
                 break;
             case "Crashed":
-                color = "bg-red-500";
+                color = "bg-red-600";
                 break;
             default:
                 color = "bg-gray-500";
