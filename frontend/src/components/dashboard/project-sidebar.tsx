@@ -9,7 +9,7 @@ import {
     SidebarGroup,
     SidebarGroupLabel
 } from "@/components/ui/sidebar"
-import { IconChevronDown, IconInfoCircle, IconNotebook, IconLayoutDashboard, IconBell, IconTrain, IconChartLine } from "@tabler/icons-react"
+import { IconChevronDown, IconNotebook, IconLayoutDashboard, IconBell, IconTrain, IconChartLine } from "@tabler/icons-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import VariableCheckbox from "../shared/variable-checkbox"
 import { Separator } from "@/components/ui/separator"
