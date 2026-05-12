@@ -59,10 +59,6 @@ export function useSimulator() {
             console.log("Showing success toast:", jsonData.payload.content)
             toast.success("Success", { description: jsonData.payload.content })
           }
-          else if (jsonData.payload.type === "info") {
-            console.log("Showing info toast:", jsonData.payload.content)
-            toast.info("Info", { description: jsonData.payload.content })
-          }
           else if (jsonData.payload.type === "critical") {
             console.log("Showing warning toast:", jsonData.payload.content)
             toast.warning("Critical", { description: jsonData.payload.content })

@@ -19,7 +19,7 @@ createRoot(document.getElementById("root")!).render(
         } as React.CSSProperties
         }>
         <App />
-        <Toaster position="top-center" />
+        <Toaster position="bottom-center" />
       </SidebarProvider>
     </ThemeProvider>
   </StrictMode>
