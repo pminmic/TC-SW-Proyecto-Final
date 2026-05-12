@@ -1,5 +1,5 @@
 import type { HeaderDataProps } from "@/types/props"
-import { IconSkull } from "@tabler/icons-react"
+import { Card, CardHeader, CardTitle } from "../ui/card"
 
 
 const HeaderData = ({ payload }: HeaderDataProps) => {
@@ -12,63 +12,93 @@ const HeaderData = ({ payload }: HeaderDataProps) => {
         )
     }
 
-    let stateColor = null
+    let stateColor = ""
 
     switch (payload.state) {
         case "Idle":
-            stateColor = <div className="rounded-full bg-gray-500 w-2 h-2"></div>
+            stateColor = "gray-500"
             break
         case "Precharge":
-            stateColor = <div className="rounded-full bg-yellow-500 w-2 h-2"></div>
+            stateColor = "yellow-500"
             break
         case "Ready":
-            stateColor = <div className="rounded-full bg-green-500 w-2 h-2"></div>
+            stateColor = "green-500"
             break
         case "Running":
-            stateColor = <div className="rounded-full bg-blue-500 w-2 h-2"></div>
+            stateColor = "blue-500"
             break
         case "Boosting":
-            stateColor = <div className="rounded-full bg-purple-500 w-2 h-2"></div>
+            stateColor = "purple-500"
             break
         case "Braking":
-            stateColor = <div className="rounded-full bg-orange-500 w-2 h-2"></div>
+            stateColor = "orange-500"
             break
         case "Stopped":
-            stateColor = <div className="rounded-full bg-orange-700 w-2 h-2"></div>
+            stateColor = "orange-700"
             break
         case "Crashed":
-            stateColor = <IconSkull className="text-red-500" />
+            stateColor = "red-500"
             break
         default:
-            stateColor = null
+            stateColor = ""
     }
 
+    const stateCircle = <div className={`rounded-full w-4 h-4 bg-${stateColor}`}></div>
+
     return (
-        <span className="flex justify-between px-10">
-            <span className="flex items-center gap-1">
-                <span className="font-bold">State:</span>
-                <span>{stateColor}</span>
-                <span>{payload.state.toUpperCase()}</span>
-            </span>
-            <span>
-                <span className="font-bold">Position:</span> {payload.position_m.toFixed(2)} m
-            </span>
-            <span>
-                <span className="font-bold">Velocity:</span> {payload.velocity_kmh.toFixed(2)} km/h
-            </span>
-            <span>
-                <span className="font-bold">Acceleration:</span> {payload.acceleration_ms2.toFixed(2)} m/s²
-            </span>
-            <span>
-                <span className="font-bold">Mass:</span> {payload.mass_kg.toFixed(2)} kg
-            </span>
-            <span>
-                <span className="font-bold">Voltage:</span> {payload.voltage_v.toFixed(2)} V
-            </span>
-            <span>
-                <span className="font-bold">Current:</span> {payload.current_a.toFixed(2)} A
-            </span>
-        </span>
+        <div className={`w-full mb-5 flex justify-between align-middle`}>
+            <Card className="min-h-1/12 min-w-1/8">
+                <CardHeader>
+                    <CardTitle className="text-lg text-center">
+                        <span className="font-bold">Position:</span> {payload.position_m.toFixed(2)} m
+                    </CardTitle>
+                </CardHeader>
+            </Card>
+            <Card className="min-h-1/12 min-w-1/8  ">
+                <CardHeader>
+                    <CardTitle className="text-lg text-center">
+                        <span className="font-bold">Velocity:</span> {payload.velocity_kmh.toFixed(2)} km/h
+                    </CardTitle>
+                </CardHeader>
+            </Card>
+            <Card className="min-h-1/12 min-w-1/8">
+                <CardHeader>
+                    <CardTitle className="text-lg text-center">
+                        <span className="font-bold">Acc.:</span> {payload.acceleration_ms2.toFixed(2)} m/s²
+                    </CardTitle>
+                </CardHeader>
+            </Card>
+            <Card className={`min-h-1/12 min-w-1/6 border-${stateColor} border-2 bg-${stateColor}/50`}>
+                <CardHeader>
+                    <CardTitle className="flex align-middle items-center justify-center gap-2 text-lg">
+                        <span className="font-bold">State:</span>
+                        <span>{stateCircle}</span>
+                        <span>{payload.state.toUpperCase()}</span>
+                    </CardTitle>
+                </CardHeader>
+            </Card>
+            <Card className="min-h-1/12 min-w-1/8">
+                <CardHeader>
+                    <CardTitle className="text-lg text-center">
+                        <span className="font-bold">Mass:</span> {payload.mass_kg.toFixed(2)} kg
+                    </CardTitle>
+                </CardHeader>
+            </Card>
+            <Card className="min-h-1/12 min-w-1/8">
+                <CardHeader>
+                    <CardTitle className="text-lg text-center">
+                        <span className="font-bold">Voltage:</span> {payload.voltage_v.toFixed(2)} V
+                    </CardTitle>
+                </CardHeader>
+            </Card>
+            <Card className="min-h-1/12 min-w-1/8">
+                <CardHeader>
+                    <CardTitle className="text-lg text-center">
+                        <span className="font-bold">Current:</span> {payload.current_a.toFixed(2)} A
+                    </CardTitle>
+                </CardHeader>
+            </Card>
+        </div>
     )
 }
 

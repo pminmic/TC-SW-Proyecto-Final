@@ -1,10 +1,10 @@
-import { useState} from "react"
+import { useState } from "react"
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import ButtonArea from "@/components/dashboard/button-area"
 import ChartsArea from "@/components/dashboard/charts-area"
 import MessageArea from "./message-area"
@@ -36,83 +36,83 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
   const messageArea = <MessageArea messages={messages} />
   const modelArea = <ModelArea payload={lastData} />
   const buttonArea = <ButtonArea
-      wValue={wValue}
-      setWValue={setWValue}
-      isWeightSet={isWeigthSet}
-      handleSetWeight={handleSetWeight}
-      handleReset={handleReset} />
+    wValue={wValue}
+    setWValue={setWValue}
+    isWeightSet={isWeigthSet}
+    handleSetWeight={handleSetWeight}
+    handleReset={handleReset} />
   const chartArea = <ChartsArea
-      variableSelected={variableSelected}
-      payload={payload}
-    />
+    variableSelected={variableSelected}
+    payload={payload}
+  />
   const headerData = <HeaderData payload={lastData} />
 
   if (numLayout === "chart-view") {
     return (
-      <Card className="w-full min-h-11/12 m-5">
-        <CardHeader>
-          {headerData}
-        </CardHeader>
-        <CardContent className="h-full">
-          <ResizablePanelGroup orientation="vertical" className="h-full">
-            <ResizablePanel defaultSize="65%">
-              {chartArea}
-            </ResizablePanel>
-            <ResizableHandle withHandle />
-            <ResizablePanel defaultSize="35%" minSize="25%">
-              <ResizablePanelGroup orientation="horizontal" className="h-full">
-                <ResizablePanel defaultSize="25%">
-                  {messageArea}
-                </ResizablePanel>
-                <ResizableHandle withHandle />
-                <ResizablePanel defaultSize="50%">
-                  {modelArea}
-                </ResizablePanel>
-                <ResizableHandle withHandle />
-                <ResizablePanel defaultSize="25%" minSize="25%">
-                  {buttonArea}
-                </ResizablePanel>
-              </ResizablePanelGroup>
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </CardContent>
-      </Card>
+      <div className="w-full min-h-11/12 flex flex-col m-5">
+        {headerData}
+        <Card className="w-full min-h-11/12">
+          <CardContent className="h-full">
+            <ResizablePanelGroup orientation="vertical" className="h-full">
+              <ResizablePanel defaultSize="65%">
+                {chartArea}
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize="35%" minSize="25%">
+                <ResizablePanelGroup orientation="horizontal" className="h-full">
+                  <ResizablePanel defaultSize="25%">
+                    {messageArea}
+                  </ResizablePanel>
+                  <ResizableHandle withHandle />
+                  <ResizablePanel defaultSize="50%">
+                    {modelArea}
+                  </ResizablePanel>
+                  <ResizableHandle withHandle />
+                  <ResizablePanel defaultSize="25%" minSize="25%">
+                    {buttonArea}
+                  </ResizablePanel>
+                </ResizablePanelGroup>
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </CardContent>
+        </Card>
+      </div>
     )
   }
   else {
     return (
-      <Card className="w-full min-h-11/12 m-5">
-        <CardHeader>
-          {headerData}
-        </CardHeader>
-        <CardContent className="h-full">
-          <ResizablePanelGroup orientation="horizontal" className="h-full">
-            <ResizablePanel defaultSize="75%">
-              <ResizablePanelGroup orientation="vertical" className="h-full">
-                <ResizablePanel defaultSize="50%">
-                  {chartArea}
-                </ResizablePanel>
-                <ResizableHandle withHandle />
-                <ResizablePanel defaultSize="50%">
-                  {modelArea}
-                </ResizablePanel>
-              </ResizablePanelGroup>
-            </ResizablePanel>
-            <ResizableHandle withHandle />
-            <ResizablePanel defaultSize="25%" minSize="25%" maxSize="60%">
-              <ResizablePanelGroup orientation="vertical" className="h-full">
-                <ResizablePanel defaultSize="65%">
-                  {messageArea}
-                </ResizablePanel>
-                <ResizableHandle withHandle />
-                <ResizablePanel defaultSize="35%" minSize="25%">
-                  {buttonArea}
-                </ResizablePanel>
-              </ResizablePanelGroup>
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </CardContent>
-      </Card>
+      <div className="w-full min-h-11/12 flex flex-col m-5">
+        {headerData}
+        <Card className="w-full min-h-11/12">
+          <CardContent className="h-full">
+            <ResizablePanelGroup orientation="horizontal" className="h-full">
+              <ResizablePanel defaultSize="75%">
+                <ResizablePanelGroup orientation="vertical" className="h-full">
+                  <ResizablePanel defaultSize="50%">
+                    {chartArea}
+                  </ResizablePanel>
+                  <ResizableHandle withHandle />
+                  <ResizablePanel defaultSize="50%">
+                    {modelArea}
+                  </ResizablePanel>
+                </ResizablePanelGroup>
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize="25%" minSize="25%" maxSize="60%">
+                <ResizablePanelGroup orientation="vertical" className="h-full">
+                  <ResizablePanel defaultSize="65%">
+                    {messageArea}
+                  </ResizablePanel>
+                  <ResizableHandle withHandle />
+                  <ResizablePanel defaultSize="35%" minSize="25%">
+                    {buttonArea}
+                  </ResizablePanel>
+                </ResizablePanelGroup>
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </CardContent>
+        </Card>
+      </div>
     )
   }
 }
