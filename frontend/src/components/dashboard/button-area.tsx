@@ -28,7 +28,7 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
                 <ButtonGroup>
                     <Button
                         disabled={!isWeightSet}
-                        className="p-5 w-20 text-white/50 hover:bg-yellow-500/60 bg-yellow-400/50"
+                        className="p-5 w-20 text-yellow-950 hover:bg-yellow-400/80 bg-yellow-400 border-2 border-yellow-500"
                         onClick={handlePrecharge}
                     >
                         PRECHARGE
@@ -37,7 +37,7 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
                 <ButtonGroup>
                     <Button
                         disabled={!isWeightSet}
-                        className="p-5 w-20 bg-green-500/20 hover:bg-green-700/50 text-green-400 "
+                        className="p-5 w-20 text-green-950 bg-green-500 border-2 border-green-600 hover:bg-green-600/80"
                         size="lg"
                         onClick={handleStart}
                     >
@@ -47,8 +47,7 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
                 <ButtonGroup>
                     <Button
                         disabled={!isWeightSet}
-                        className="p-5 w-20"
-                        variant="destructive"
+                        className="p-5 w-20 text-red-950 border-2 border-red-600 hover:bg-red-500/80 bg-red-500"
                         onClick={handleBreak}
                     >
                         BRAKE
@@ -56,8 +55,7 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
                 </ButtonGroup>
                 <ButtonGroup>
                     <Button
-                        className="p-5 w-20"
-                        variant="secondary"
+                        className="p-5 w-20 text-slate-200 border-2 border-slate-700 bg-slate-600 hover:bg-slate-600/80"
                         onClick={() => handleReset()}
                     >
                         RESET
