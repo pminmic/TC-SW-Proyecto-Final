@@ -42,31 +42,31 @@ const CHART_CONFIGS: Record<
 > = {
     voltage: {
         label: "Voltage (V)",
-        color: "#FACC15",
+        color: "rgb(250, 204, 21)",
         backgroundColor: "rgba(250, 204, 21, 0.14)",
         yAxisLabel: "Voltage (V)",
     },
     acceleration: {
         label: "Acceleration (m/s²)",
-        color: "#A78BFA",
+        color: "rgb(167, 139, 250)",
         backgroundColor: "rgba(167, 139, 250, 0.14)",
         yAxisLabel: "Acceleration (m/s²)",
     },
     velocity: {
         label: "Velocity (km/h)",
-        color: "#FB923C",
+        color: "rgb(251, 146, 60)",
         backgroundColor: "rgba(251, 146, 60, 0.14)",
         yAxisLabel: "Velocity (km/h)",
     },
     force: {
         label: "Force (N)",
-        color: "#38BDF8",
+        color: "rgb(56, 189, 248)",
         backgroundColor: "rgba(56, 189, 248, 0.14)",
         yAxisLabel: "Force (N)",
     },
     intensity: {
         label: "Current (A)",
-        color: "#4ADE80",
+        color: "rgb(74, 222, 128)",
         backgroundColor: "rgba(74, 222, 128, 0.14)",
         yAxisLabel: "Current (A)",
     },
@@ -75,9 +75,9 @@ const CHART_CONFIGS: Record<
 const DOMAIN_CONFIGS: Record<ChartKey, [number, number]> = {
     voltage: [0, 400],
     acceleration: [-30, 30],
-    velocity: [-25, 25],
-    force: [-1000, 1500],
-    intensity: [-200, 200],
+    velocity: [-30, 30],
+    force: [-2000, 2000],
+    intensity: [-250, 250],
 }
 
 const toTimestampMs = (timestamp: string | number | Date) => {
@@ -106,24 +106,17 @@ const SingleChart = memo(({ dataKey, data, height }: SingleChartPropsChartJS) =>
                 {
                     label: config.label,
                     data,
-
                     borderColor: config.color,
                     backgroundColor: config.backgroundColor,
-
                     borderWidth: 3,
                     borderCapStyle: "round",
                     borderJoinStyle: "round",
-
                     pointRadius: 0,
                     pointHoverRadius: 5,
                     pointHoverBorderWidth: 2,
                     pointHoverBackgroundColor: config.color,
                     pointHoverBorderColor: "#F8FAFC",
-
-                    // Con 20 puntos podemos permitir una curva suave.
-                    // Si prefieres máxima precisión visual, cambia a 0.
-                    tension: 0.25,
-
+                    tension: 0.25, 
                     fill: true,
                     spanGaps: true,
                     parsing: false,
@@ -169,7 +162,6 @@ const SingleChart = memo(({ dataKey, data, height }: SingleChartPropsChartJS) =>
                     borderWidth: 1,
                     padding: 10,
                     displayColors: false,
-
                     callbacks: {
                         title: items => {
                             const index = Math.round(items[0]?.parsed.x ?? 0)
@@ -183,41 +175,34 @@ const SingleChart = memo(({ dataKey, data, height }: SingleChartPropsChartJS) =>
                         },
                     },
                 },
-
                 decimation: {
                     enabled: true,
                     algorithm: "min-max",
                     threshold: 1000,
                 },
             },
-
             elements: {
                 point: {
                     radius: 0,
                     hitRadius: 12,
                     hoverRadius: 5,
                 },
-
                 line: {
                     tension: 0.25,
                 },
             },
-
             scales: {
                 x: {
                     type: "linear",
                     min: 0,
                     max: MAX_POINTS - 1,
-
                     bounds: "ticks",
                     offset: false,
-
                     border: {
                         display: true,
                         color: "rgba(226, 232, 240, 0.55)",
                         width: 1.5,
                     },
-
                     grid: {
                         display: true,
                         color: "rgba(148, 163, 184, 0.22)",
@@ -226,7 +211,6 @@ const SingleChart = memo(({ dataKey, data, height }: SingleChartPropsChartJS) =>
                         tickLength: 6,
                         tickColor: "rgba(226, 232, 240, 0.55)",
                     },
-
                     ticks: {
                         color: "rgba(226, 232, 240, 0.82)",
                         font: {
@@ -238,7 +222,6 @@ const SingleChart = memo(({ dataKey, data, height }: SingleChartPropsChartJS) =>
                         minRotation: 0,
                         maxRotation: 0,
                         sampleSize: MAX_POINTS,
-
                         callback: value => {
                             const index = Number(value)
 
@@ -259,18 +242,15 @@ const SingleChart = memo(({ dataKey, data, height }: SingleChartPropsChartJS) =>
                         },
                     },
                 },
-
                 y: {
                     type: "linear",
                     min: DOMAIN_CONFIGS[dataKey][0],
                     max: DOMAIN_CONFIGS[dataKey][1],
-
                     border: {
                         display: true,
                         color: "rgba(226, 232, 240, 0.55)",
                         width: 1.5,
                     },
-
                     grid: {
                         display: true,
                         color: context => {
@@ -291,7 +271,6 @@ const SingleChart = memo(({ dataKey, data, height }: SingleChartPropsChartJS) =>
                         tickLength: 6,
                         tickColor: "rgba(226, 232, 240, 0.55)",
                     },
-
                     title: {
                         display: true,
                         text: config.yAxisLabel,
@@ -301,7 +280,6 @@ const SingleChart = memo(({ dataKey, data, height }: SingleChartPropsChartJS) =>
                             weight: 600,
                         },
                     },
-
                     ticks: {
                         color: "rgba(226, 232, 240, 0.82)",
                         font: {

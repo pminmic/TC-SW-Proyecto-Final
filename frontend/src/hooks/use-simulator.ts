@@ -16,7 +16,7 @@ export function useSimulator() {
   const FLUSH_INTERVAL_MS = 250 // flush every 250ms (4 Hz), same as simulator update rate
 
   useEffect(() => {
-    // Evita doble conexión si ya existe (por StrictMode en dev)
+    // Avoid duplicate connection if one already exists (due to StrictMode in dev)
     if (socketRef.current) return
 
     const socket = new WebSocket(`${API_WS}/backend/stream`)

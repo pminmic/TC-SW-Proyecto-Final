@@ -13,7 +13,7 @@ pub async fn ws_handler(ws: WebSocketUpgrade, State(state): State<AppState>) -> 
 }
 
 async fn handle_socket(socket: WebSocket, state: AppState) {
-    // Cada cliente recibe su propio receiver del broadcast
+    // Each client gets its own receiver from the broadcast channel
     let mut data_rx = state.data.subscribe();
     let mut message_rx = state.message.subscribe();
     let (mut sender, _receiver) = socket.split();
