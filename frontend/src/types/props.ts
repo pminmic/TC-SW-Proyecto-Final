@@ -1,4 +1,4 @@
-import type { PayloadType, VariableSelected, ProgressInfo, LayoutType } from "./types"
+import type { PayloadType, VariableSelected, ProgressInfo, LayoutType, ChartKey, ChartPoint } from "./types"
 
 export type WeightInputProps = {
     wValue: number,
@@ -57,4 +57,10 @@ export type ProgressSegmentsProps = {
 
 export type ModelAreaProps = {
     payload: PayloadType | null
+}
+
+export type SingleChartPropsChartJS = {
+    dataKey: ChartKey
+    data: ChartPoint[]
+    height: string
 }

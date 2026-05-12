@@ -29,3 +29,11 @@ export type MessageType = [string, string] // [type, content]
 export type useCommandTypes = "precharge" | "start" | "brake" | "reset"
 
 export type LayoutType = "chart-view" | "model-view"
+
+export type ChartKey = (readonly ["voltage", "acceleration", "velocity", "force", "intensity"])[number]
+
+export type ChartPoint = {
+    x: number
+    y: number
+    timestamp: number
+}
