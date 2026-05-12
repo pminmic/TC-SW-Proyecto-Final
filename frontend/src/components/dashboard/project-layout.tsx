@@ -34,24 +34,18 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
   }
 
   // Optimize excesive rerenderings
-  const messageArea = useMemo(() => {
-    return <MessageArea messages={messages} />
-  }, [messages])
-  const modelArea = useMemo(() => {
-    return <ModelArea payload={lastData} />
-  }, [lastData])
+  const messageArea = <MessageArea messages={messages} />
+  const modelArea = <ModelArea payload={lastData} />
   const buttonArea = <ButtonArea
     wValue={wValue}
     setWValue={setWValue}
     isWeightSet={isWeigthSet}
     handleSetWeight={handleSetWeight}
     handleReset={handleReset} />
-  const chartArea = useMemo(() => {
-    return <ChartsArea
+  const chartArea = <ChartsArea
       variableSelected={variableSelected}
       payload={payload}
     />
-  }, [variableSelected, payload])
   const headerData = <HeaderData payload={lastData} />
 
   if (numLayout === "chart-view") {
