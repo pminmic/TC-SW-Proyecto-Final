@@ -7,18 +7,19 @@ import { memo } from "react"
 
 const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleReset }: ButtonAreaProps) => {
 
+    const { sendCommand } = useCommand()
     const isInvalid = typeof wValue[0] === "string" && isNaN(parseFloat(wValue[0]))
 
-    const handlePrecharge = () => {
-        useCommand("precharge")
+    const handlePrecharge = async () => {
+        await sendCommand("precharge")
     }
 
     const handleStart = async () => {
-        useCommand("start", wValue[0])
+        await sendCommand("start", wValue[0])
     }
 
     const handleBreak = async () => {
-        useCommand("brake")
+        await sendCommand("brake")
     }
 
     return (

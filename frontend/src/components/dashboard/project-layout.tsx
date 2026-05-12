@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import {
   ResizableHandle,
   ResizablePanel,
@@ -20,6 +20,7 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
   const [wValue, setWValue] = useState([90])
   const [isWeigthSet, setIsWeightSet] = useState(false)
   const { payload, messages } = useSimulator()
+  const { sendCommand } = useCommand()
 
   const lastData = payload.length > 0 ? payload[payload.length - 1] : null
 
@@ -28,23 +29,29 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
   }
 
   const handleReset = async () => {
-    useCommand("reset")
+    await sendCommand("reset")
     setIsWeightSet(false)
   }
 
   // Optimize excesive rerenderings
-  const messageArea = <MessageArea messages={messages} />
-  const modelArea = <ModelArea payload={lastData} />
+  const messageArea = useMemo(() => {
+    return <MessageArea messages={messages} />
+  }, [messages])
+  const modelArea = useMemo(() => {
+    return <ModelArea payload={lastData} />
+  }, [lastData])
   const buttonArea = <ButtonArea
     wValue={wValue}
     setWValue={setWValue}
     isWeightSet={isWeigthSet}
     handleSetWeight={handleSetWeight}
     handleReset={handleReset} />
-  const chartArea = <ChartsArea
-    variableSelected={variableSelected}
-    payload={payload}
-  />
+  const chartArea = useMemo(() => {
+    return <ChartsArea
+      variableSelected={variableSelected}
+      payload={payload}
+    />
+  }, [variableSelected, payload])
   const headerData = <HeaderData payload={lastData} />
 
   if (numLayout === "chart-view") {
