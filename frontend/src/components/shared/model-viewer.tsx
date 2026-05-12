@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react'
 import '@google/model-viewer'
 
 const ModelViewer = () => {
@@ -7,7 +6,6 @@ const ModelViewer = () => {
             {/* @ts-ignore */}
             <model-viewer
                 src="/soporte_ruedas.glb"
-                camera-controls
                 shadow-intensity="1"
                 style={{ width: '100%', minHeight: '200px', display: 'block' }}
             />

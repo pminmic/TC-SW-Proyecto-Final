@@ -13,7 +13,7 @@ export function useSimulator() {
   // Buffer incoming payloads to batch state updates and avoid excessive rerenders
   const bufferRef = useRef<PayloadType[]>([])
   const timerRef = useRef<number | null>(null)
-  const FLUSH_INTERVAL_MS = 100 // flush every 100ms (10 Hz)
+  const FLUSH_INTERVAL_MS = 250 // flush every 250ms (4 Hz), same as simulator update rate
 
   useEffect(() => {
     // Evita doble conexión si ya existe (por StrictMode en dev)
@@ -24,19 +24,13 @@ export function useSimulator() {
 
     // Flush buffer at a fixed interval to limit UI updates and CPU work
     const flush = () => {
-      try {
-        const buf = bufferRef.current
-        if (buf.length > 0) {
-          setPayload(prev => {
-            let next = [...prev, ...buf]
-            bufferRef.current = []
-            if (next.length > 20) return next.slice(-20)
-            return next
-          })
-        }
-      } catch (e) {
-        console.error("Error flushing payload buffer:", e)
-      }
+      const buf = bufferRef.current
+      if (buf.length === 0) return
+      bufferRef.current = []  // clear before setState
+      setPayload(prev => {
+        const combined = [...prev, ...buf]
+        return combined.length > 20 ? combined.slice(-20) : combined
+      })
     }
 
     // Start periodic flush
@@ -56,7 +50,7 @@ export function useSimulator() {
             if (next.length > 50) next.pop()
             return next
           })
-          
+
           if (jsonData.payload.type === "error") {
             console.log("Showing error toast:", jsonData.payload.content)
             toast.error("Error", { description: jsonData.payload.content })
