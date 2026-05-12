@@ -2,12 +2,14 @@ import '@google/model-viewer'
 
 const ModelViewer = () => {
     return (
-        <div style={{ width: '100%', height: '200px' }}>
+        <div style={{ width: '100%', height: '300px' }}>
             {/* @ts-ignore */}
             <model-viewer
-                src="/soporte_ruedas.glb"
+                src="/vehicle.glb"
                 shadow-intensity="1"
-                style={{ width: '100%', minHeight: '200px', display: 'block' }}
+                control-camera
+                touch-action="pan-y"
+                style={{ width: '100%', minHeight: '300px', display: 'block' }}
             />
         </div>
     )
