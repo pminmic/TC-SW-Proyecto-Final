@@ -23,7 +23,7 @@ const variables = [
     { id: "acceleration", label: "Acceleration (a)", initial: "a" },
     { id: "velocity", label: "Velocity (v)", initial: "v" },
     { id: "force", label: "Force (F)", initial: "F" },
-    { id: "intensity", label: "Intensity (I)", initial: "I" },
+    { id: "intensity", label: "Current (I)", initial: "I" },
 ]
 
 const VariableCheckbox = ({
