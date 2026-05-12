@@ -28,7 +28,7 @@ const ButtonArea = ({ wValue, setWValue, isWeightSet, handleSetWeight, handleRes
                 <ButtonGroup>
                     <Button
                         disabled={!isWeightSet}
-                        className="p-5 w-20 text-white/50 hover:bg-amber-300/40 bg-amber-400/30"
+                        className="p-5 w-20 text-white/50 hover:bg-yellow-500/60 bg-yellow-400/50"
                         onClick={handlePrecharge}
                     >
                         PRECHARGE
