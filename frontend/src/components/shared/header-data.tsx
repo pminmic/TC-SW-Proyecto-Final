@@ -6,44 +6,26 @@ const HeaderData = ({ payload }: HeaderDataProps) => {
 
     if (!payload) {
         return (
-            <span>
+            <Card className="mb-5 text-lg pl-3">
                 No data received yet.
-            </span>
+            </Card>
         )
     }
 
-    let stateColor = ""
-
-    switch (payload.state) {
-        case "Idle":
-            stateColor = "gray-500"
-            break
-        case "Precharge":
-            stateColor = "yellow-500"
-            break
-        case "Ready":
-            stateColor = "green-500"
-            break
-        case "Running":
-            stateColor = "blue-500"
-            break
-        case "Boosting":
-            stateColor = "purple-500"
-            break
-        case "Braking":
-            stateColor = "orange-500"
-            break
-        case "Stopped":
-            stateColor = "orange-700"
-            break
-        case "Crashed":
-            stateColor = "red-500"
-            break
-        default:
-            stateColor = ""
+    const stateStyles: Record<string, { bg: string; border: string; circle: string }> = {
+        Idle: { bg: "bg-gray-500/50", border: "border-gray-500", circle: "bg-gray-500" },
+        Precharge: { bg: "bg-yellow-500/50", border: "border-yellow-500", circle: "bg-yellow-500" },
+        Ready: { bg: "bg-green-500/50", border: "border-green-500", circle: "bg-green-500" },
+        Running: { bg: "bg-blue-500/50", border: "border-blue-500", circle: "bg-blue-500" },
+        Boosting: { bg: "bg-purple-500/50", border: "border-purple-500", circle: "bg-purple-500" },
+        Braking: { bg: "bg-orange-500/50", border: "border-orange-500", circle: "bg-orange-500" },
+        Stopped: { bg: "bg-orange-700/50", border: "border-orange-700", circle: "bg-orange-700" },
+        Crashed: { bg: "bg-red-500/50", border: "border-red-500", circle: "bg-red-500" },
     }
 
-    const stateCircle = <div className={`rounded-full w-4 h-4 bg-${stateColor}`}></div>
+    const styles = stateStyles[payload.state] ?? { bg: "", border: "", circle: "" }
+
+    const stateCircle = <div className={`rounded-full w-4 h-4 ${styles.circle}`}></div>
 
     return (
         <div className={`w-full mb-5 flex justify-between align-middle`}>
@@ -68,7 +50,7 @@ const HeaderData = ({ payload }: HeaderDataProps) => {
                     </CardTitle>
                 </CardHeader>
             </Card>
-            <Card className={`min-h-1/12 min-w-1/6 border-${stateColor} border-2 bg-${stateColor}/50`}>
+            <Card className={`min-h-1/12 min-w-1/6 border-2 ${styles.border} ${styles.bg}`}>
                 <CardHeader>
                     <CardTitle className="flex align-middle items-center justify-center gap-2 text-lg">
                         <span className="font-bold">State:</span>
