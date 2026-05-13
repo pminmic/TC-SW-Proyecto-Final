@@ -171,7 +171,7 @@ const SingleChart = memo(({ dataKey, data, height }: SingleChartPropsChartJS) =>
                         },
 
                         label: context => {
-                            return `${config.label}: ${context.parsed.y.toFixed(2)}`
+                            if (context.parsed.y) return `${config.label}: ${context.parsed.y.toFixed(2)}`
                         },
                     },
                 },

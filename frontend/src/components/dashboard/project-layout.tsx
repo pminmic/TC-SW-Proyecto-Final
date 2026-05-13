@@ -13,6 +13,7 @@ import HeaderData from "../shared/header-data"
 import type { ProjectLayoutProps } from "@/types/props"
 import { useSimulator } from "@/hooks/use-simulator"
 import { useCommand } from "@/hooks/use-command"
+import { toast } from "sonner"
 
 
 const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
@@ -25,7 +26,12 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
   const lastData = payload.length > 0 ? payload[payload.length - 1] : null
 
   const handleSetWeight = () => {
-    setIsWeightSet(true)
+    if (isWeigthSet) {
+      toast.warning("The weight is already set, press RESET to set another")
+    }
+    else {
+      setIsWeightSet(true)
+    }
   }
 
   const handleReset = async () => {
@@ -42,12 +48,12 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
     handleSetWeight={handleSetWeight}
     handleReset={handleReset} />
   const chartArea = <ChartsArea
-      variableSelected={variableSelected}
-      payload={payload}
-    />
+    variableSelected={variableSelected}
+    payload={payload}
+  />
   const headerData = <HeaderData payload={lastData} />
 
-  const isCrashed = lastData?.state === "Crashed" ? "animate-pulse": ""
+  const isCrashed = lastData?.state === "Crashed" ? "animate-pulse" : ""
 
   if (numLayout === "model-view") {
     return (
@@ -102,9 +108,9 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
                     {messageArea}
                   </ResizablePanel>
                   <ResizableHandle withHandle />
-                    <ResizablePanel>
-                      <ModelArea payload={lastData} layout="chart-view" />
-                    </ResizablePanel>
+                  <ResizablePanel>
+                    <ModelArea payload={lastData} layout="chart-view" />
+                  </ResizablePanel>
                   <ResizableHandle withHandle />
                   <ResizablePanel defaultSize="25%" minSize="25%">
                     {buttonArea}
