@@ -80,7 +80,7 @@ const MovingModel = ({ progressInfo }: MovingModelProps) => {
 
         // Text render
         const textLoader = new FontLoader()
-        textLoader.load("/node_modules/three/examples/fonts/helvetiker_bold.typeface.json", font => {
+        textLoader.load("/helvetiker_bold.typeface.json", font => {
             const config = {
                 font,
                 size: 0.2,

@@ -1,7 +1,7 @@
 use axum::{
     Router,
     http::HeaderValue,
-    routing::{get, post},
+    routing::{get, post}
 };
 use backend::{
     config::AppState,
@@ -12,7 +12,7 @@ use backend::{
 };
 use std::sync::Arc;
 use tokio::sync::{Mutex, broadcast};
-use tower_http::cors::{Any, CorsLayer};
+use tower_http::{cors::{Any, CorsLayer}, services::ServeDir};
 
 #[tokio::main]
 async fn main() {
@@ -51,14 +51,19 @@ async fn main() {
         .with_state(state)
         .layer(cors_ws.clone());
 
+    let app_front = Router::new()
+        .fallback_service(ServeDir::new("dist"));
+
     // Bind the server to the specified address and port
     let listener_http = tokio::net::TcpListener::bind("0.0.0.0:8001").await.unwrap();
     let listener_ws = tokio::net::TcpListener::bind("0.0.0.0:5001").await.unwrap();
+    let listener_front = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
 
     // Start the server and serve incoming requests
-    let (res_http, res_ws) = tokio::join!(
+    let (res_http, res_ws, res_front) = tokio::join!(
         axum::serve(listener_http, app_http),
         axum::serve(listener_ws, app_ws),
+        axum::serve(listener_front, app_front),
     );
 
     if let Err(e) = res_http {
@@ -66,5 +71,8 @@ async fn main() {
     }
     if let Err(e) = res_ws {
         eprintln!("Error en servidor WS: {}", e);
+    }
+    if let Err(e) = res_front {
+        eprintln!("Error en servidor del front: {}", e)
     }
 }
