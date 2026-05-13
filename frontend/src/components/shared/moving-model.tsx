@@ -22,10 +22,11 @@ const MovingModel = ({ progressInfo }: MovingModelProps) => {
         return <div className='text-lg'>No data</div>
     }
 
-    const position = { x: 0, y: 0, z: progressInfo.position_m }
+    const position = { x: 0, y: 0.01, z: progressInfo.position_m }
 
     const mountRef = useRef<HTMLDivElement>(null)
     const vehicleRef = useRef<THREE.Object3D | null>(null)
+    const boardBoxRef = useRef<THREE.Object3D | null>(null)
     const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
     const controlsRef = useRef<OrbitControls | null>(null)
 
@@ -57,26 +58,10 @@ const MovingModel = ({ progressInfo }: MovingModelProps) => {
         // Not effective using WebGL
         // material.linewidth = 20
 
-        const points = []
 
-        // Also need the points for the text
+
+        // Point I consider O
         const zero = new THREE.Vector3(-0.75, 0, -1)
-        const ten = new THREE.Vector3(-0.75, 0, 9)
-        const twenty = new THREE.Vector3(-0.75, 0, 19)
-        const thirty = new THREE.Vector3(-0.75, 0, 29)
-        const fourty = new THREE.Vector3(-0.75, 0, 39)
-        const fifty = new THREE.Vector3(-0.75, 0, 49)
-
-        points.push(zero)
-        points.push(ten)
-        points.push(twenty)
-        points.push(thirty)
-        points.push(fourty)
-        points.push(fifty)
-        const geometry = new THREE.BufferGeometry().setFromPoints(points)
-        const line = new THREE.Line(geometry, material)
-        line.computeLineDistances()
-        scene.add(line)
 
         // Text render
         const textLoader = new FontLoader()
@@ -87,16 +72,24 @@ const MovingModel = ({ progressInfo }: MovingModelProps) => {
                 depth: 0.02,
                 curveSegments: 12
             }
-            
+
             const material = new THREE.MeshBasicMaterial({
                 color: 0xffffff
             });
 
             for (let i = 0; i < 21; i++) {
-                const geometry = new TextGeometry(`${2.5*i} m`, config)
-                
+                const geometry = new TextGeometry(`${2.5 * i} m`, config)
+
                 const textMesh = new THREE.Mesh(geometry, material).rotateY(180)
-                textMesh.position.set(zero.x, zero.y, zero.z + 2.5*i)
+                textMesh.position.set(zero.x, zero.y, zero.z + 2.5 * i)
+
+                const points = []
+                points.push(new THREE.Vector3(zero.x, zero.y, zero.z + 2.5 * i))
+                points.push(new THREE.Vector3(zero.x + 0.5, zero.y, zero.z + 2.5 * i))
+                const geometry_line = new THREE.BufferGeometry().setFromPoints(points)
+                const line = new THREE.Line(geometry_line, material)
+                line.computeLineDistances()
+                scene.add(line)
                 scene.add(textMesh)
             }
         }, undefined, undefined)
@@ -106,17 +99,44 @@ const MovingModel = ({ progressInfo }: MovingModelProps) => {
         controls.enableDamping = true
         controlsRef.current = controls
 
+        // Load vehicle
         const loader = new GLTFLoader()
         loader.load(
-            '/full-model-1.glb',
+            '/full-model.glb',
             (gltf) => {
                 scene.add(gltf.scene)
 
+                // HARDCODE THE COORDS
                 const vehicle = gltf.scene.getObjectByName('Ensamblaje_Abrazadera_más_soportes_ruedas_y_ruedas')
                 if (vehicle) {
-                    vehicle.position.set(-1, 0, -1)
+                    vehicle.position.set(-0.92, 0, 1.65)
                     vehicleRef.current = vehicle
                 }
+                const boardBox = gltf.scene.getObjectByName('Ensamblaje_caja_y_placa')
+                if (boardBox) {
+                    boardBox.position.set(-0.01, 0.08, 0.68)
+                    boardBoxRef.current = boardBox
+                }
+                const ems1 = gltf.scene.getObjectByName('EMSassembly')
+                if (ems1) {
+                    ems1.position.set(-0.78,1.41,-0.18)
+                }
+                const ems1_bobina = gltf.scene.getObjectByName('Ensamblaje_unidad_de_levitación_(EMS)')
+                if (ems1_bobina) {
+                    ems1_bobina.position.set(0.7,0.85,1.39)
+                    ems1_bobina.rotateZ(Math.PI / 2)
+                }
+                const ems2 = gltf.scene.getObjectByName('EMSassembly_1')
+                if (ems2) {
+                    ems2.position.set(0.55, 1.41, 2)
+                }
+                const ems2_bobina = gltf.scene.getObjectByName('Ensamblaje_unidad_de_levitación_(EMS)_1')
+                if (ems2_bobina) {
+                    ems2_bobina.position.set(0.7,0.85,1.39)
+                    ems2_bobina.rotateZ(Math.PI / 2)
+                }
+
+
             },
             undefined,
             (error) => console.error('Error cargando modelo:', error)
@@ -140,9 +160,10 @@ const MovingModel = ({ progressInfo }: MovingModelProps) => {
     // Changes the position and camera when position changes
     useEffect(() => {
         const vehicle = vehicleRef.current
+        const boardBox = boardBoxRef.current
         const camera = cameraRef.current
         const controls = controlsRef.current
-        if (!vehicle || !camera || !controls) return
+        if (!vehicle || !camera || !controls || !boardBox) return
 
         vehicle.traverse((piece) => {
             if (piece instanceof THREE.Mesh) {
@@ -151,11 +172,18 @@ const MovingModel = ({ progressInfo }: MovingModelProps) => {
         })
 
         // Moving the vehicle
-        const diff = new THREE.Vector3(-1, 0, -1)
+        const offsetVehicle = new THREE.Vector3(-0.92, 0, 1.65)
         vehicle.position.set(
-            position.x + diff.x,
-            position.y + diff.y,
-            position.z + diff.z
+            position.x + offsetVehicle.x,
+            position.y + offsetVehicle.y,
+            position.z + offsetVehicle.z
+        )
+        // Move the board too, is separated
+        const offsetBoard = new THREE.Vector3(-0.01, 0.08, 0.68)
+        boardBox.position.set(
+            position.x + offsetBoard.x,
+            position.y + offsetBoard.y,
+            position.z + offsetBoard.z
         )
 
         // Camera movement
