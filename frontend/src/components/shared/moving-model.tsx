@@ -2,10 +2,18 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { useRef, useEffect } from 'react'
-import type { ProgressInfo } from '@/types/types'
+import type { MovingModelProps } from '@/types/props'
+import { FontLoader, TextGeometry } from 'three/examples/jsm/Addons.js'
 
-type MovingModelProps = {
-    progressInfo: ProgressInfo
+const COLORS: Record<string, number> = {
+    "Idle": 0x6b7280,
+    "Precharge": 0xeab308,
+    "Ready": 0x10b981,
+    "Running": 0x3b82f6,
+    "Boosting": 0xa78bfa,
+    "Braking": 0xf97316,
+    "Stopped": 0x9a3412,
+    "Crashed": 0xdc2626
 }
 
 const MovingModel = ({ progressInfo }: MovingModelProps) => {
@@ -29,7 +37,7 @@ const MovingModel = ({ progressInfo }: MovingModelProps) => {
         scene.background = new THREE.Color(0x182328)
 
         const camera = new THREE.PerspectiveCamera(30, mount.clientWidth / mount.clientHeight, 0.1, 1000)
-        camera.position.set(-1, 1, 3)
+        camera.position.set(-2.5, 2, -2)
         cameraRef.current = camera
 
         const renderer = new THREE.WebGLRenderer({ antialias: true })
@@ -43,6 +51,57 @@ const MovingModel = ({ progressInfo }: MovingModelProps) => {
         dirLight.position.set(5, 5, 5)
         scene.add(dirLight)
 
+        // Add a line next to the track
+        const material = new THREE.LineBasicMaterial()
+        material.color = new THREE.Color().setRGB(255, 255, 255)
+        // Not effective using WebGL
+        // material.linewidth = 20
+
+        const points = []
+
+        // Also need the points for the text
+        const zero = new THREE.Vector3(-0.75, 0, -1)
+        const ten = new THREE.Vector3(-0.75, 0, 9)
+        const twenty = new THREE.Vector3(-0.75, 0, 19)
+        const thirty = new THREE.Vector3(-0.75, 0, 29)
+        const fourty = new THREE.Vector3(-0.75, 0, 39)
+        const fifty = new THREE.Vector3(-0.75, 0, 49)
+
+        points.push(zero)
+        points.push(ten)
+        points.push(twenty)
+        points.push(thirty)
+        points.push(fourty)
+        points.push(fifty)
+        const geometry = new THREE.BufferGeometry().setFromPoints(points)
+        const line = new THREE.Line(geometry, material)
+        line.computeLineDistances()
+        scene.add(line)
+
+        // Text render
+        const textLoader = new FontLoader()
+        textLoader.load("/node_modules/three/examples/fonts/helvetiker_bold.typeface.json", font => {
+            const config = {
+                font,
+                size: 0.2,
+                depth: 0.02,
+                curveSegments: 12
+            }
+            
+            const material = new THREE.MeshBasicMaterial({
+                color: 0xffffff
+            });
+
+            for (let i = 0; i < 21; i++) {
+                const geometry = new TextGeometry(`${2.5*i} m`, config)
+                
+                const textMesh = new THREE.Mesh(geometry, material).rotateY(180)
+                textMesh.position.set(zero.x, zero.y, zero.z + 2.5*i)
+                scene.add(textMesh)
+            }
+        }, undefined, undefined)
+
+        // Camera controls (orbit -> around the vehicle)
         const controls = new OrbitControls(camera, renderer.domElement)
         controls.enableDamping = true
         controlsRef.current = controls
@@ -85,8 +144,14 @@ const MovingModel = ({ progressInfo }: MovingModelProps) => {
         const controls = controlsRef.current
         if (!vehicle || !camera || !controls) return
 
+        vehicle.traverse((piece) => {
+            if (piece instanceof THREE.Mesh) {
+                piece.material.color.setHex(COLORS[progressInfo.state])
+            }
+        })
+
         // Moving the vehicle
-        const diff = new THREE.Vector3(-1, 0, -1.5)
+        const diff = new THREE.Vector3(-1, 0, -1)
         vehicle.position.set(
             position.x + diff.x,
             position.y + diff.y,
@@ -104,7 +169,7 @@ const MovingModel = ({ progressInfo }: MovingModelProps) => {
         // ControlOrbits new position
         controls.target.set(position.x, position.y, position.z)
         controls.update()
-    }, [position])
+    }, [position, progressInfo.state])
 
     //! Isn't posible the camara movement in the App, because it's position is recalculated each render
     return <div ref={mountRef} style={{ width: '100%', height: '90%' }} />

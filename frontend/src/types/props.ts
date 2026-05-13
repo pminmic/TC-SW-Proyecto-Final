@@ -65,3 +65,7 @@ export type SingleChartPropsChartJS = {
     data: ChartPoint[]
     height: string
 }
+
+export type MovingModelProps = {
+    progressInfo: ProgressInfo
+}
