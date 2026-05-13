@@ -5,9 +5,9 @@ import { memo, useMemo } from "react"
 import ModelViewer from "../shared/model-viewer"
 import MoovingModel from "../shared/moving-model"
 
-const ModelArea = ({ payload }: ModelAreaProps) => {
+const ModelArea = ({ payload, layout }: ModelAreaProps) => {
 
-    if (payload === null) {
+    if (payload === null || layout === "chart-view") {
         return <div className="w-full flex-1 min-h-[200px] h-full my-auto">
             <ModelViewer />
         </div>

@@ -28,8 +28,8 @@ const MovingModel = ({ progressInfo }: MovingModelProps) => {
         const scene = new THREE.Scene()
         scene.background = new THREE.Color(0x182328)
 
-        const camera = new THREE.PerspectiveCamera(35, mount.clientWidth / mount.clientHeight, 0.1, 1000)
-        camera.position.set(1, 1, 3)
+        const camera = new THREE.PerspectiveCamera(30, mount.clientWidth / mount.clientHeight, 0.1, 1000)
+        camera.position.set(-1, 1, 3)
         cameraRef.current = camera
 
         const renderer = new THREE.WebGLRenderer({ antialias: true })
@@ -94,7 +94,7 @@ const MovingModel = ({ progressInfo }: MovingModelProps) => {
         )
 
         // Camera movement
-        const offset = new THREE.Vector3(1, 1, 3)
+        const offset = new THREE.Vector3(-2.5, 2, -2)
         camera.position.set(
             position.x + offset.x,
             position.y + offset.y,
@@ -107,7 +107,7 @@ const MovingModel = ({ progressInfo }: MovingModelProps) => {
     }, [position])
 
     //! Isn't posible the camara movement in the App, because it's position is recalculated each render
-    return <div ref={mountRef} style={{ width: '100%', height: '100%' }} />
+    return <div ref={mountRef} style={{ width: '100%', height: '90%' }} />
 }
 
 export default MovingModel

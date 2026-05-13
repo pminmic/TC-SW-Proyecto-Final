@@ -8,10 +8,10 @@ export function App() {
   const [numLayout, setNumLayout] = useState<LayoutType>("chart-view");
   const [variableSelected, setVariableSelected] = useState<VariableSelected>({
     voltage: true,
-    acceleration: false,
+    acceleration: true,
     velocity: true,
-    force: false,
-    intensity: false
+    force: true,
+    intensity: true
   })
 
 

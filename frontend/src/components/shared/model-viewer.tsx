@@ -7,7 +7,7 @@ const ModelViewer = () => {
             <model-viewer
                 src="/vehicle.glb"
                 shadow-intensity="1"
-                control-camera
+                camera-controls
                 touch-action="pan-y"
                 style={{ width: '100%', minHeight: '300px', display: 'block' }}
             />

@@ -35,7 +35,6 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
 
   // Optimize excesive rerenderings
   const messageArea = <MessageArea messages={messages} />
-  const modelArea = <ModelArea payload={lastData} />
   const buttonArea = <ButtonArea
     wValue={wValue}
     setWValue={setWValue}
@@ -50,7 +49,7 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
 
   const isCrashed = lastData?.state === "Crashed" ? "animate-pulse": ""
 
-  if (numLayout === "chart-view") {
+  if (numLayout === "model-view") {
     return (
       <div className={`w-full min-h-11/12 flex flex-col m-5 ${isCrashed}`}>
         {headerData}
@@ -58,17 +57,17 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
           <CardContent className="h-full">
             <ResizablePanelGroup orientation="vertical" className="h-full">
               <ResizablePanel defaultSize="65%">
-                {chartArea}
+                <ModelArea payload={lastData} layout="model-view" />
               </ResizablePanel>
               <ResizableHandle withHandle />
-              <ResizablePanel defaultSize="35%" minSize="25%">
+              <ResizablePanel defaultSize="30%" minSize="30%">
                 <ResizablePanelGroup orientation="horizontal" className="h-full">
                   <ResizablePanel defaultSize="25%">
                     {messageArea}
                   </ResizablePanel>
                   <ResizableHandle withHandle />
                   <ResizablePanel defaultSize="50%">
-                    {modelArea}
+                    <ModelArea payload={lastData} layout="chart-view" />
                   </ResizablePanel>
                   <ResizableHandle withHandle />
                   <ResizablePanel defaultSize="25%" minSize="25%">
@@ -91,23 +90,23 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
             <ResizablePanelGroup orientation="horizontal" className="h-full">
               <ResizablePanel defaultSize="75%">
                 <ResizablePanelGroup orientation="vertical" className="h-full">
-                  <ResizablePanel defaultSize="50%">
+                  <ResizablePanel>
                     {chartArea}
-                  </ResizablePanel>
-                  <ResizableHandle withHandle />
-                  <ResizablePanel defaultSize="50%">
-                    {modelArea}
                   </ResizablePanel>
                 </ResizablePanelGroup>
               </ResizablePanel>
               <ResizableHandle withHandle />
               <ResizablePanel defaultSize="25%" minSize="25%" maxSize="60%">
                 <ResizablePanelGroup orientation="vertical" className="h-full">
-                  <ResizablePanel defaultSize="65%">
+                  <ResizablePanel defaultSize="40%">
                     {messageArea}
                   </ResizablePanel>
                   <ResizableHandle withHandle />
-                  <ResizablePanel defaultSize="35%" minSize="25%">
+                    <ResizablePanel>
+                      <ModelArea payload={lastData} layout="chart-view" />
+                    </ResizablePanel>
+                  <ResizableHandle withHandle />
+                  <ResizablePanel defaultSize="25%" minSize="25%">
                     {buttonArea}
                   </ResizablePanel>
                 </ResizablePanelGroup>

@@ -56,7 +56,8 @@ export type ProgressSegmentsProps = {
 }
 
 export type ModelAreaProps = {
-    payload: PayloadType | null
+    payload: PayloadType | null,
+    layout: LayoutType
 }
 
 export type SingleChartPropsChartJS = {
