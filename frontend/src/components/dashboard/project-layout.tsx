@@ -48,9 +48,11 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
     />
   const headerData = <HeaderData payload={lastData} />
 
+  const isCrashed = lastData?.state === "Crashed" ? "animate-pulse": ""
+
   if (numLayout === "chart-view") {
     return (
-      <div className="w-full min-h-11/12 flex flex-col m-5">
+      <div className={`w-full min-h-11/12 flex flex-col m-5 ${isCrashed}`}>
         {headerData}
         <Card className="w-full min-h-11/12">
           <CardContent className="h-full">
@@ -82,7 +84,7 @@ const ProjectLayout = ({ numLayout, variableSelected }: ProjectLayoutProps) => {
   }
   else {
     return (
-      <div className="w-full min-h-11/12 flex flex-col m-5">
+      <div className={`w-full min-h-11/12 flex flex-col m-5 ${isCrashed}`}>
         {headerData}
         <Card className="w-full min-h-11/12">
           <CardContent className="h-full">
