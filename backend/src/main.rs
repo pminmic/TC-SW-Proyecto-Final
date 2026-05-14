@@ -16,68 +16,32 @@ use tower_http::{cors::{Any, CorsLayer}, services::ServeDir};
 
 #[tokio::main]
 async fn main() {
+    let port = std::env::var("PORT").unwrap_or("3000".to_string());
 
-    println!("
-        \n\nBackend initialized:
-        - HTTP server on port 8001
-        - WebSocket server on port 5001
-        \nFrontend at 0.0.0.0:3000 (localhost)
-        To stop the server, press Ctrl+C");
-    // Set up CORS to allow requests from any origin
-    let cors_http = CorsLayer::new()
+    println!("\n\nBackend initialized on port {port}");
+
+    let cors = CorsLayer::new()
         .allow_origin(Any)
         .allow_methods(Any)
         .allow_headers(Any);
 
-    let cors_ws = CorsLayer::new()
-        .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
-        .allow_methods(Any)
-        .allow_headers(Any);
-
-    // high capacity to avoid lagging the simulator if the frontend is not consuming fast enough
     let (data, _) = broadcast::channel::<SimSnapshot>(2);
     let (message, _) = broadcast::channel::<WsMessage>(1);
-
     let sim: SharedSim = Arc::new(Mutex::new(Simulator::new()));
     let sim_for_loop = Arc::clone(&sim);
     tokio::spawn(Simulator::run(sim_for_loop, data.clone(), message.clone()));
 
     let state = AppState { sim, data, message };
 
-    // Build the app endpoint routes
-    let app_http = Router::new()
+    let app = Router::new()
         .route("/api/calculate", get(http::calculate::calculate))
         .route("/api/command", post(http::command::command))
-        .with_state(state.clone())
-        .layer(cors_http.clone());
-
-    let app_ws = Router::new()
         .route("/backend/stream", get(websocket::broadcaster::ws_handler))
+        .fallback_service(ServeDir::new("dist"))
         .with_state(state)
-        .layer(cors_ws.clone());
+        .layer(cors);
 
-    let app_front = Router::new()
-        .fallback_service(ServeDir::new("dist"));
-
-    // Bind the server to the specified address and port
-    let listener_http = tokio::net::TcpListener::bind("0.0.0.0:8001").await.unwrap();
-    let listener_ws = tokio::net::TcpListener::bind("0.0.0.0:5001").await.unwrap();
-    let listener_front = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-
-    // Start the server and serve incoming requests
-    let (res_http, res_ws, res_front) = tokio::join!(
-        axum::serve(listener_http, app_http),
-        axum::serve(listener_ws, app_ws),
-        axum::serve(listener_front, app_front),
-    );
-
-    if let Err(e) = res_http {
-        eprintln!("Error en servidor HTTP: {}", e);
-    }
-    if let Err(e) = res_ws {
-        eprintln!("Error en servidor WS: {}", e);
-    }
-    if let Err(e) = res_front {
-        eprintln!("Error en servidor del front: {}", e)
-    }
+    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{port}")).await.unwrap();
+    println!("Servidor escuchando en 0.0.0.0:{port}");
+    axum::serve(listener, app).await.unwrap();
 }
